@@ -1,5 +1,7 @@
-import * as React from 'react';
 import Head from 'next/head';
+import 'semantic-ui-css/semantic.min.css';
+import * as React from 'react';
+import { Icon } from 'semantic-ui-react';
 import styles from '../styles/Home.module.css';
 
 export default function Home() {
@@ -9,6 +11,7 @@ export default function Home() {
         <title>Valheim Tools</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
 
       <main className={styles.main}>
         <h1 className={styles.title}>
@@ -25,7 +28,7 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Open Source on Github
+          <Icon name='github' /> MIT on GitHub
         </a>
       </footer>
     </div >

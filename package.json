@@ -5,18 +5,19 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "eslint --fix"
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
-    },
-    "lint-staged": {
-      "**/*.{ts|tsx}": [
-        "eslint --fix",
-        "git add"
-      ]
     }
+  },
+  "lint-staged": {
+    "**/*.{ts|tsx}": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "dependencies": {
     "next": "10.0.6",

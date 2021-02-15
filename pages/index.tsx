@@ -18,7 +18,7 @@ export default function Home() {
         </h1>
 
         <p className={styles.description}>
-          Coming Soon
+          Coming Soon!
         </p>
       </main>
       <footer className={styles.footer}>

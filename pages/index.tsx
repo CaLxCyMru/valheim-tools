@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import 'semantic-ui-css/semantic.min.css';
 import * as React from 'react';
 import { Icon } from 'semantic-ui-react';
 import styles from '../styles/Home.module.css';

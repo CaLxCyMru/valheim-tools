@@ -16,7 +16,7 @@
         "eslint --fix",
         "git add"
       ]
-    },
+    }
   },
   "dependencies": {
     "next": "10.0.6",
@@ -38,6 +38,7 @@
     "eslint-plugin-react-hooks": "^1.7.0",
     "git-format-staged": "^2.1.1",
     "husky": "^5.0.9",
+    "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
     "typescript": "^4.1.5"
   }

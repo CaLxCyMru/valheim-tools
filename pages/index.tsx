@@ -7,7 +7,6 @@ export default function Home() {
   const [activeItem, setActiveItem] = React.useState('home');
 
   const handleItemClick = (event, { name }) => {
-    console.log(name);
     setActiveItem(name);
   };
 

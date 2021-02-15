@@ -18,7 +18,6 @@ export default function Home() {
           Coming Soon
         </p>
       </main>
-
       <footer className={styles.footer}>
         <a
           href="https://github.com/team-solar/valheim-tools"
@@ -26,8 +25,8 @@ export default function Home() {
           rel="noopener noreferrer"
         >
           Open Source on Github
-        </a>
+    </a>
       </footer>
-    </div>
+    </div >
   )
 }

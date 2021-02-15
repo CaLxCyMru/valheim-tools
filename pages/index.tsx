@@ -23,7 +23,7 @@ export default function Home() {
       </main>
       <footer className={styles.footer}>
         <a
-          href="https://github.com/team-solar/valheim-tools"
+          href="https://github.com/calxcymru/valheim-tools"
           target="_blank"
           rel="noopener noreferrer"
         >

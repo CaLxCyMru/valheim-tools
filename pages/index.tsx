@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import * as React from 'react';
 import { Icon } from 'semantic-ui-react';
-import styles from '../styles/Home.module.css';
+import styles from '../styles/Home.module.scss';
 
 export default function Home() {
   return (

@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint --fix"
+    "lint": "eslint '*/**/*.{ts,tsx}' --fix"
   },
   "husky": {
     "hooks": {
@@ -14,7 +14,7 @@
     }
   },
   "lint-staged": {
-    "**/*.{ts|tsx}": [
+    "**/*.{ts,tsx}": [
       "eslint --fix",
       "git add"
     ]
@@ -30,7 +30,9 @@
     "@types/node": "^14.14.28",
     "@types/react": "^17.0.2",
     "@types/semantic-ui": "^2.2.7",
-    "eslint": "^7.2.0",
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
+    "eslint": "^7.20.0",
     "eslint-config-airbnb": "18.2.1",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-import": "^2.22.1",

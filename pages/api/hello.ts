@@ -8,6 +8,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const data = await response.json();
-
   res.status(200).json(data);
 };

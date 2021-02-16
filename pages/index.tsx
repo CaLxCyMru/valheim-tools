@@ -1,7 +1,7 @@
 import { signIn, signOut, useSession } from 'next-auth/client';
 import Head from 'next/head';
 import * as React from 'react';
-import { Icon, Menu } from 'semantic-ui-react';
+import { Icon, Loader, Menu } from 'semantic-ui-react';
 import styles from '../styles/Home.module.scss';
 
 export default function Home() {
@@ -11,7 +11,9 @@ export default function Home() {
     setActiveItem(name);
   };
 
-  const [session] = useSession();
+  const [session, loading] = useSession();
+
+  const loader = <Loader active size='tiny' />;
 
   return (
     <div className={styles.container}>
@@ -38,24 +40,22 @@ export default function Home() {
         </Menu.Item>
 
         {!session &&
-
           <Menu.Item
             name='login'
             active={activeItem === 'login'}
             onClick={() => signIn()}
           >
-            Log In
+            {loading ? loader : <>Log In</>}
           </Menu.Item>
         }
 
         {session &&
-
           <Menu.Item
             name='logout'
             active={activeItem === 'logout'}
             onClick={() => signOut()}
           >
-            Log out of {session.user.email}
+            {loading ? loader : <>Log out of {session.user.email}</>}
           </Menu.Item>
         }
       </Menu>

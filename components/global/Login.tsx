@@ -29,7 +29,9 @@ const Login = ({ providers }: LoginProps) => {
 
   const getLoginState = () => {
     if (loading) {
-      return <Loader active size='tiny' />;
+      return <Menu.Item>
+        <Loader active size='tiny' />
+      </Menu.Item>;
     }
 
     if (!session) {

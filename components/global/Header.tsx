@@ -1,7 +1,7 @@
-import { signIn, signOut, useSession } from 'next-auth/client';
 import React from 'react';
-import { Loader, Menu } from 'semantic-ui-react';
+import { Menu } from 'semantic-ui-react';
 import styles from '../../styles/components/global/Header.module.scss';
+import Login from './Login';
 
 type HeaderProps = {
 
@@ -13,10 +13,6 @@ const Header = (props: HeaderProps) => {
   const handleItemClick = (event, { name }) => {
     setActiveItem(name);
   };
-
-  const [session, loading] = useSession();
-
-  const loader = <Loader active size='tiny' />;
 
   return (
     <div className={styles.header}>
@@ -38,28 +34,7 @@ const Header = (props: HeaderProps) => {
           Seeds
         </Menu.Item>
 
-        <Menu.Menu position='right'>
-
-          {!session &&
-            <Menu.Item
-              name='login'
-              active={activeItem === 'login'}
-              onClick={() => signIn()}
-            >
-              {loading ? loader : <>Log In</>}
-            </Menu.Item>
-          }
-
-          {session &&
-            <Menu.Item
-              name='logout'
-              active={activeItem === 'logout'}
-              onClick={() => signOut()}
-            >
-              {loading ? loader : <>Log out of {session.user.email}</>}
-            </Menu.Item>
-          }
-        </Menu.Menu>
+        <Login />
       </Menu>
     </div>
   );

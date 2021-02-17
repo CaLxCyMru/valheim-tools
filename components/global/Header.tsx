@@ -1,45 +1,48 @@
+import { WithRouterProps } from 'next/dist/client/with-router';
+import Link from 'next/link';
+import { withRouter } from 'next/router';
 import React from 'react';
-import { Menu } from 'semantic-ui-react';
+import { Menu, Sticky } from 'semantic-ui-react';
 import styles from '../../styles/components/global/Header.module.scss';
+import { WithProviders } from '../../types';
 import Login from './Login';
 
 type HeaderProps = {
+  appRef: React.Ref<any>;
+} & WithProviders & WithRouterProps;
 
-};
-
-const Header = (props: HeaderProps) => {
-  const [activeItem, setActiveItem] = React.useState('home');
-
-  const handleItemClick = (event, { name }) => {
-    setActiveItem(name);
-  };
+const Header = ({ appRef, providers, router }: HeaderProps) => {
+  const page = router.pathname;
 
   return (
-    <div className={styles.header}>
-      <Menu pointing secondary>
+    <Sticky className={styles.header} context={appRef} >
+      <Menu className={styles.menu} attached='top' stackable inverted size='large'>
+        <Menu.Item header className={styles.logo}>
+          Valheim Tools
+        </Menu.Item>
         <Menu.Item
           className={'item'}
           name='home'
-          active={activeItem === 'home'}
-          onClick={handleItemClick}
+          active={page === '/' || page === '/home'}
         >
-          Home
+          <Link href='/'>
+            Home
+          </Link>
         </Menu.Item>
-
         <Menu.Item
           name='seeds'
-          active={activeItem === 'seeds'}
-          onClick={handleItemClick}
+          active={page === '/seeds' || page === '/seeds/'}
         >
-          Seeds
+          <Link href='/seeds'>
+            Seeds
+          </Link>
         </Menu.Item>
-
-        <Login />
+        <Login providers={providers} />
       </Menu>
-    </div>
+    </Sticky>
   );
 
 };
 
-export default Header;
+export default withRouter(Header);
 

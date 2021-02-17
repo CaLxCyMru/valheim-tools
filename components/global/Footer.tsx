@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from 'semantic-ui-react';
+import { Container, Icon, Segment } from 'semantic-ui-react';
 import styles from '../../styles/components/global/Footer.module.scss';
 
 type FooterProps = {
@@ -7,15 +7,19 @@ type FooterProps = {
 };
 
 const Footer = (props: FooterProps) => {
-  return <footer className={`${styles.footer}`}>
-    <a
-      href='https://github.com/calxcymru/valheim-tools'
-      target='_blank'
-      rel='noopener noreferrer'
-    >
-      <Icon name='github' />{' '}MIT on GitHub
+  return <Segment inverted vertical className={`${styles.footer}`}>
+    <Container>
+      &copy; {new Date().getUTCFullYear()} Valheim Tools. Not Affiliated with Valheim/Iron Gate Studios
+      <a
+        className={styles.github}
+        href='https://github.com/calxcymru/valheim-tools'
+        target='_blank'
+        rel='noopener noreferrer'
+      >
+        <Icon name='github' />{' '}MIT on GitHub 🚀
     </a>
-  </footer>;
+    </Container>
+  </Segment>;
 };
 
 export default Footer;

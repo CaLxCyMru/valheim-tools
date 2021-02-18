@@ -1,4 +1,5 @@
 import React, { createRef } from "react";
+import { Container } from "semantic-ui-react";
 import { Footer, Header } from "../global";
 
 export const withLayout = (Page) => {
@@ -7,7 +8,9 @@ export const withLayout = (Page) => {
   return ({ providers, ...props }) => (
     <div ref={appRef}>
       <Header providers={providers} />
-      <Page {...props} />
+      <Container>
+        <Page {...props} />
+      </Container>
       <Footer />
     </div>
   );;

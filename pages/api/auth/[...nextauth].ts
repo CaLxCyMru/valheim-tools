@@ -5,6 +5,10 @@ import Providers from 'next-auth/providers';
 const options: InitOptions = {
   // full list of providers can be found https://next-auth.js.org/configuration/providers
   providers: [
+    Providers.Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+    }),
     Providers.Discord({
       clientId: process.env.DISCORD_CLIENT_ID,
       clientSecret: process.env.DISCORD_CLIENT_SECRET,

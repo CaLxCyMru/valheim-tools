@@ -1,8 +1,8 @@
 import { signIn, signOut, useSession } from 'next-auth/client';
 import React from 'react';
-import { Button, Header, Icon, Image, Loader, Menu, Modal } from 'semantic-ui-react';
-import { SessionProviders } from '../../types';
+import { Button, Header, Image, Menu, Modal } from 'semantic-ui-react';
 import styles from '../../styles/components/global/Login.module.scss';
+import { SessionProviders } from '../../types';
 
 type LoginProps = {
   providers: SessionProviders;
@@ -18,6 +18,9 @@ const getLogoForProviders = (id: string) => {
       break;
     case 'twitch':
       logo = 'twitch.svg';
+      break;
+    case 'google':
+      logo = 'google.svg';
       break;
     default:
       throw new Error(`Unable to get logo for provider with id '${id}'`);
@@ -37,18 +40,12 @@ const Login = ({ providers }: LoginProps) => {
   const logout = () => signOut();
 
   const getLoginState = () => {
-    if (loading) {
-      return <Menu.Item>
-        <Loader active size='tiny' />
-      </Menu.Item>;
-    }
-
     if (!session) {
       return (<>
         <Menu.Item
           name='login'
         >
-          <Button className={styles.login} primary onClick={login}>Log In</Button>
+          <Button className={styles.login} color='violet' loading={loading} onClick={login}>Log In</Button>
         </Menu.Item>
         <Modal
           className={styles.loginModal}
@@ -58,10 +55,10 @@ const Login = ({ providers }: LoginProps) => {
         >
           <Modal.Header>Login</Modal.Header>
           <Modal.Content>
-            <Header subheader textAlign='center'>Please select a login provider</Header>
+            <Header textAlign='center'>Please select a login provider</Header>
             {Object.values(providers).map(provider => (
               <div key={provider.name} className={styles.provider}>
-                <Button className={styles.loginButton} basic primary onClick={() => signIn(provider.id)}>
+                <Button className={styles.loginButton} basic color='grey' onClick={() => signIn(provider.id)}>
                   <Image className={styles.logo} size='mini' src={getLogoForProviders(provider.id)} />
                   <span className={styles.providerName}>
                     Sign in with {provider.name}
@@ -88,7 +85,7 @@ const Login = ({ providers }: LoginProps) => {
         <Image src={session.user.image} size='mini' circular className={styles.avatar} />
       }
       {session.user.name ?? session.user.email}
-      <Button className={styles.logout} color='red' onClick={logout}>Log Out</Button>
+      <Button className={styles.logout} color='violet' loading={loading} onClick={logout}>Log Out</Button>
     </Menu.Item>
   }
 

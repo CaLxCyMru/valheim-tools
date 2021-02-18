@@ -9,6 +9,10 @@ const options: InitOptions = {
       clientId: process.env.DISCORD_CLIENT_ID,
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
     }),
+    Providers.Twitch({
+      clientId: process.env.TWITCH_CLIENT_ID,
+      clientSecret: process.env.TWITCH_CLIENT_SECRET,
+    }),
   ],
   adapter:  Adapters.TypeORM.Adapter(
     {

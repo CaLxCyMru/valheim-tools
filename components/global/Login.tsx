@@ -1,6 +1,6 @@
 import { signIn, signOut, useSession } from 'next-auth/client';
 import React from 'react';
-import { Button, Image, Loader, Menu, Modal } from 'semantic-ui-react';
+import { Button, Header, Icon, Image, Loader, Menu, Modal } from 'semantic-ui-react';
 import { SessionProviders } from '../../types';
 import styles from '../../styles/components/global/Login.module.scss';
 
@@ -8,13 +8,22 @@ type LoginProps = {
   providers: SessionProviders;
 };
 
+const assetsPath = '/assets/login';
+
 const getLogoForProviders = (id: string) => {
+  let logo: string;
   switch (id) {
     case 'discord':
-      return '/assets/login/discord.svg';
+      logo = 'discord.svg';
+      break;
+    case 'twitch':
+      logo = 'twitch.svg';
+      break;
     default:
       throw new Error(`Unable to get logo for provider with id '${id}'`);
   }
+
+  return `${assetsPath}/${logo}`;
 }
 
 const Login = ({ providers }: LoginProps) => {
@@ -42,17 +51,17 @@ const Login = ({ providers }: LoginProps) => {
           <Button className={styles.login} primary onClick={login}>Log In</Button>
         </Menu.Item>
         <Modal
+          className={styles.loginModal}
           size='tiny'
           open={open}
           onClose={closeLoginModal}
-
         >
           <Modal.Header>Login</Modal.Header>
-
           <Modal.Content>
+            <Header subheader textAlign='center'>Please select a login provider</Header>
             {Object.values(providers).map(provider => (
               <div key={provider.name} className={styles.provider}>
-                <Button className={styles.loginButton} primary onClick={() => signIn(provider.id)} basic>
+                <Button className={styles.loginButton} basic primary onClick={() => signIn(provider.id)}>
                   <Image className={styles.logo} size='mini' src={getLogoForProviders(provider.id)} />
                   <span className={styles.providerName}>
                     Sign in with {provider.name}

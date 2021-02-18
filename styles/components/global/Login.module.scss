@@ -8,17 +8,27 @@
   }
 }
 
-.provider {
-  .loginButton {
-    display: block;
-    margin: 0 auto !important;
-  }
+.loginModal {
+  max-width: 350px;
 
-  .logo {
-    display: inline-block !important;
-  }
+  .provider {
+    margin: 20px auto;
 
-  .providerName {
-    margin-left: 5px;
+    .loginButton {
+      display: block;
+      margin: 0 auto !important;
+      width: 100%;
+      max-width: 290px;
+      height: 56px;
+    }
+
+    .logo {
+      display: inline-block !important;
+      max-height: 35px;
+    }
+
+    .providerName {
+      margin-left: 5px;
+    }
   }
 }

@@ -8,14 +8,13 @@ import { WithProviders } from '../../types';
 import Login from './Login';
 
 type HeaderProps = {
-  appRef: React.Ref<any>;
 } & WithProviders & WithRouterProps;
 
-const Header = ({ appRef, providers, router }: HeaderProps) => {
+const Header = ({ providers, router }: HeaderProps) => {
   const page = router.pathname;
 
   return (
-    <Sticky className={styles.header} context={appRef} >
+    <div className={styles.header}>
       <Menu className={styles.menu} attached='top' stackable inverted size='large'>
         <Menu.Item header className={styles.logo}>
           Valheim Tools
@@ -39,7 +38,7 @@ const Header = ({ appRef, providers, router }: HeaderProps) => {
         </Menu.Item>
         <Login providers={providers} />
       </Menu>
-    </Sticky>
+    </div>
   );
 
 };

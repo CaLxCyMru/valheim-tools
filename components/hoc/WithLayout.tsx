@@ -6,7 +6,7 @@ export const withLayout = (Page) => {
 
   return ({ providers, ...props }) => (
     <div ref={appRef}>
-      <Header appRef={appRef} providers={providers} />
+      <Header providers={providers} />
       <Page {...props} />
       <Footer />
     </div>

@@ -1,6 +1,9 @@
+import { DateTime } from 'luxon';
 import NextAuth, { InitOptions } from 'next-auth';
 import Adapters from 'next-auth/adapters';
 import Providers from 'next-auth/providers';
+import { AuthUser } from '../../../models';
+import { createConnection } from '../lib/seeds-db';
 
 const options: InitOptions = {
   // full list of providers can be found https://next-auth.js.org/configuration/providers
@@ -27,6 +30,38 @@ const options: InitOptions = {
     database: String(process.env.AUTH_DB_NAME),
     synchronize: Boolean(process.env.AUTH_DB_SYNCHRONIZE ?? false),
   }),
+  callbacks: {
+    signIn: async ({ id, name }: any, account, profile) => {
+      const connection = await createConnection();
+      const now = DateTime.now().toJSDate();
+
+      console.log(account, profile);
+
+      const user: AuthUser = {
+        id, 
+        name: profile.username ?? profile.name ?? profile.email,
+        created: now,
+        updated: now,
+      };
+
+      await connection.createQueryBuilder()
+        .insert()
+        .into(AuthUser)
+        .values(user)
+        .orUpdate({ conflict_target: ['id'], overwrite: ['updated']})
+        .execute();
+
+      return true;
+    },
+    session: async (session, { id }: any) => {
+      if (!id) {
+        throw new Error('Error whilst getting session - no id present');
+      }
+      
+      session.user['id'] = id;
+      return session;
+    }
+  }
 };
 
 export default (req, res) => NextAuth(req, res, options);

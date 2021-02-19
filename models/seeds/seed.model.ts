@@ -1,7 +1,8 @@
 import { Dates, IDates } from '../common/dates.model';
 import { ISeedAsset, SeedAsset } from './seed-asset.model';
 import { ISeedStatistics, SeedStatistics } from './seed-statistics.model';
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { AuthUser, IAuthUser } from '../auth-user';
 
 export interface ISeed extends IDates {
   id: string;
@@ -10,6 +11,7 @@ export interface ISeed extends IDates {
   tags?: string[];
   statistics: ISeedStatistics;
   assets: ISeedAsset[];
+  createdBy: IAuthUser;
 }
 
 @Entity()
@@ -32,4 +34,7 @@ export class Seed extends Dates implements ISeed {
 
   @OneToMany('SeedAsset', 'seed', { eager: true })
   public readonly assets: SeedAsset[];
+
+  @ManyToOne('AuthUser', 'seeds', { eager: true })
+  public readonly createdBy: AuthUser;
 }

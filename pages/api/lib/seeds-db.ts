@@ -9,6 +9,7 @@ import {
 import { v4 as uuid } from 'uuid';
 // TODO: May need to be moved in future if we get more than one db
 import 'reflect-metadata';
+import { AuthUser } from '../../../models';
 
 let databaseConnection: Connection;
 
@@ -21,7 +22,7 @@ const config: ConnectionOptions = {
   database: String(process.env.SEEDS_DB_NAME),
   synchronize: Boolean(process.env.SEEDS_DB_SYNCHRONIZE ?? false),
   // TODO: Load via file
-  entities: [Seed, SeedAsset, SeedStatistics],
+  entities: [Seed, SeedAsset, SeedStatistics, AuthUser],
   name: uuid(),
 };
 

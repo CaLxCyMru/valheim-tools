@@ -31,6 +31,7 @@ const getLogoForProviders = (id: string) => {
 
 const Login = ({ providers }: LoginProps) => {
   const [session, loading] = useSession();
+
   const [open, setOpen] = React.useState(false);
 
   const closeLoginModal = () => setOpen(false);

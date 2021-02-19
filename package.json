@@ -20,16 +20,19 @@
     ]
   },
   "dependencies": {
+    "luxon": "^1.26.0",
     "mysql": "^2.18.1",
     "next": "10.0.6",
     "next-auth": "^3.4.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-use-clipboard": "^1.0.7",
     "sass": "^1.32.7",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.3"
   },
   "devDependencies": {
+    "@types/luxon": "^1.26.0",
     "@types/next-auth": "^3.1.24",
     "@types/node": "^14.14.28",
     "@types/react": "^17.0.2",

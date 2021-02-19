@@ -84,7 +84,7 @@ const Seed = ({ seed, assets, description, tags, statistics: { likes }, created 
 
 
 const Seeds = () => {
-  const { data, isValidating } = useSWR<ISeed>('/api/seeds', { revalidateOnFocus: false, refreshWhenHidden: false, revalidateOnReconnect: false, refreshWhenOffline: false, revalidateOnMount: false });
+  const { data, isValidating } = useSWR<ISeed[]>('/api/seeds', { revalidateOnFocus: false, refreshWhenHidden: false, revalidateOnReconnect: false, refreshWhenOffline: false, revalidateOnMount: false });
 
   if (!data) {
     return <Loader active />

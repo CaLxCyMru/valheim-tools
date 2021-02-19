@@ -1,21 +1,29 @@
 import { DateTime, ToRelativeCalendarOptions } from 'luxon';
+import { session, useSession } from 'next-auth/client';
 import React from 'react';
 import useClipboard from "react-use-clipboard";
 import { Button, Card, Icon, Image, Label, Popup } from 'semantic-ui-react';
-import { SeedAssetType } from '../../enums';
+import { Role, SeedAssetType } from '../../enums';
 import { ISeed } from '../../models';
+import { SessionUser } from '../../types';
 
-const Seed = ({ seed, assets, description, tags, statistics: { likes }, created, createdBy: { name: poster } }: ISeed) => {
+const Seed = ({ seed, assets, description, tags, statistics: { likes }, created, createdBy }: ISeed) => {
+  const [session] = useSession();
+
+  const user = session.user as SessionUser;
+
   const preview = assets?.find(({ type }) => type === SeedAssetType.PREVIEW)?.url;
 
   const [isSeedCopied, setSeedCopied] = useClipboard(seed, {
     successDuration: 1000,
   });
 
+  // TODO: HACK for now as I don't want to actually delete them from the DB. Just use some react state magic ✨
+  const [deleted, setDeleted] = React.useState(false);
+
   const getPostedDuration = () => {
     const createdDate: DateTime = typeof created === 'string' ? DateTime.fromISO(created) : undefined;
     const base = DateTime.now();
-    console.log(createdDate)
     const diff = base.diff(createdDate);
 
     const options: ToRelativeCalendarOptions = { base };
@@ -37,8 +45,18 @@ const Seed = ({ seed, assets, description, tags, statistics: { likes }, created,
     return createdDate.toRelativeCalendar(options);
   };
 
+  const deleteSeed = () => setDeleted(true);
+
+  if (deleted) {
+    return <></>;
+  }
+
   return <Card>
-    <Image src={preview} />
+    <Image label={
+      (user.id === createdBy.id || user.role === Role.ADMIN) &&
+      { as: 'a', color: 'red', corner: 'right', icon: 'trash', onClick: deleteSeed, size: 'large' }
+    }
+      src={preview} />
     <Card.Content>
       <Card.Header>{seed}</Card.Header>
       <Card.Description>
@@ -72,7 +90,7 @@ const Seed = ({ seed, assets, description, tags, statistics: { likes }, created,
     {tags &&
       <Card.Content>
         <Card.Meta>
-          Posted by {poster}
+          Posted by {createdBy.name}
         </Card.Meta>
         <Label.Group circular>
           {tags.map((tag) => <Label>{`#${tag}`}</Label>)}

@@ -19,7 +19,7 @@ export class Seed extends Dates implements ISeed {
   @PrimaryGeneratedColumn('uuid')
   public readonly id: string;
 
-  @Column()
+  @Column({ unique: true })
   public readonly seed: string;
 
   @Column()

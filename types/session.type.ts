@@ -1,6 +1,7 @@
 import { User } from "next-auth";
+import { Role } from "../enums";
 
-export type SessionUser = { id: string | number } & User;
+export type SessionUser = { id: string | number, role: Role } & User;
 
 export type Session = { 
   user: SessionUser;

@@ -10,7 +10,7 @@ import { SessionUser } from '../../types';
 const Seed = ({ seed, assets, description, tags, statistics: { likes }, created, createdBy }: ISeed) => {
   const [session] = useSession();
 
-  const user = session.user as SessionUser;
+  const user = session?.user as SessionUser;
 
   const preview = assets?.find(({ type }) => type === SeedAssetType.PREVIEW)?.url;
 
@@ -53,7 +53,7 @@ const Seed = ({ seed, assets, description, tags, statistics: { likes }, created,
 
   return <Card>
     <Image label={
-      (user.id === createdBy.id || user.role === Role.ADMIN) &&
+      (user?.id === createdBy.id || user?.role === Role.ADMIN) &&
       { as: 'a', color: 'red', corner: 'right', icon: 'trash', onClick: deleteSeed, size: 'large' }
     }
       src={preview} />

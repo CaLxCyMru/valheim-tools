@@ -7,7 +7,7 @@ const options: InitOptions = {
   providers: [
     Providers.Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
     Providers.Discord({
       clientId: process.env.DISCORD_CLIENT_ID,
@@ -18,17 +18,15 @@ const options: InitOptions = {
       clientSecret: process.env.TWITCH_CLIENT_SECRET,
     }),
   ],
-  adapter:  Adapters.TypeORM.Adapter(
-    {
-      type: 'mysql',
-      host: String(process.env.AUTH_DB_HOST ?? '127.0.0.1'),
-      port: Number(process.env.AUTH_DB_PORT ?? 3306) ,
-      username: String(process.env.AUTH_DB_USERNAME),
-      password: String(process.env.AUTH_DB_PASSWORD),
-      database: String(process.env.AUTH_DB_NAME),
-      synchronize: Boolean(process.env.AUTH_DB_SYNCHRONIZE ?? false),
-    }
-  )
+  adapter: Adapters.TypeORM.Adapter({
+    type: 'mysql',
+    host: String(process.env.AUTH_DB_HOST ?? '127.0.0.1'),
+    port: Number(process.env.AUTH_DB_PORT ?? 3306),
+    username: String(process.env.AUTH_DB_USERNAME),
+    password: String(process.env.AUTH_DB_PASSWORD),
+    database: String(process.env.AUTH_DB_NAME),
+    synchronize: Boolean(process.env.AUTH_DB_SYNCHRONIZE ?? false),
+  }),
 };
 
 export default (req, res) => NextAuth(req, res, options);

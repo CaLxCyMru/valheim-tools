@@ -9,7 +9,7 @@ export const withLayout = (Page) => {
   return ({ providers, ...props }) => (
     <div className={styles.layout} ref={appRef}>
       <Header providers={providers} />
-      <Segment className={styles.page}>
+      <Segment vertical className={styles.page}>
         <Container>
           <Page {...props} />
         </Container>

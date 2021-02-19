@@ -1,124 +1,24 @@
 import React from 'react';
 import { withLayout } from '../components';
 import styles from '../styles/pages/Home.module.scss';
-import { Button, Card, Divider, Icon, Image, Label, Popup, Statistic } from 'semantic-ui-react';
+import { Button, Card, Divider, Icon, Image, Label, Loader, Popup, Statistic } from 'semantic-ui-react';
 import { DateTime, Duration, ToRelativeCalendarOptions } from 'luxon';
 import useClipboard from "react-use-clipboard";
+import { ISeed } from '../models';
+import { SeedAssetType } from '../enums';
+import useSWR from 'swr';
 
-interface IDates {
-  created: Date;
-  updated: Date;
-}
-
-enum SeedAssetType {
-  PREVIEW,
-  MAP,
-  SCREENSHOT,
-}
-
-interface ISeedAsset {
-  type: SeedAssetType;
-  asset: string;
-}
-
-interface ISeedStatistics {
-  likes: number;
-  dislikes: number;
-}
-
-interface ISeed {
-  id: string;
-  seed: string;
-  statistics: ISeedStatistics;
-  description: string;
-  dates: IDates;
-  tags?: string[]
-  assets: ISeedAsset[];
-};
-
-const randomNumber = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);
-
-const data: ISeed[] = [
-  {
-    id: '1',
-    seed: '7SWT9BBVEZ',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    statistics: {
-      likes: randomNumber(0, 5000),
-      dislikes: 0,
-    },
-    dates: {
-      created: DateTime.now().minus(Duration.fromObject({ seconds: randomNumber(1, 6000) })).toJSDate(),
-      updated: new Date(),
-    },
-    assets: [{
-      type: SeedAssetType.PREVIEW,
-      asset: '/assets/example/preview.jpg',
-    }]
-  },
-  {
-    id: '2',
-    seed: '3RL7KFQ3FK',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    statistics: {
-      likes: randomNumber(0, 5000),
-      dislikes: 0,
-    },
-    dates: {
-      created: DateTime.now().minus(Duration.fromObject({ seconds: randomNumber(1, 6000) })).toJSDate(),
-      updated: new Date(),
-    },
-    assets: [{
-      type: SeedAssetType.PREVIEW,
-      asset: '/assets/example/preview.jpg',
-    }]
-  },
-  {
-    id: '3',
-    seed: 'ASWZ7LE5N3',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    statistics: {
-      likes: randomNumber(0, 5000),
-      dislikes: 0,
-    },
-    dates: {
-      created: DateTime.now().minus(Duration.fromObject({ seconds: randomNumber(1, 6000) })).toJSDate(),
-      updated: new Date(),
-    },
-    assets: [{
-      type: SeedAssetType.PREVIEW,
-      asset: '/assets/example/preview.jpg',
-    }]
-  },
-  {
-    id: '4',
-    seed: 'ZNMJDW11K7',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    statistics: {
-      likes: randomNumber(0, 5000),
-      dislikes: 0,
-    },
-    dates: {
-      created: DateTime.now().minus(Duration.fromObject({ seconds: randomNumber(1, 6000) })).toJSDate(),
-      updated: new Date(),
-    },
-    assets: [{
-      type: SeedAssetType.PREVIEW,
-      asset: '/assets/example/preview.jpg',
-    }]
-  }
-];
-
-const Seed = ({ seed, assets, description, statistics: { likes }, dates: { created } }: ISeed) => {
-  const preview = assets?.find(({ type }) => type === SeedAssetType.PREVIEW)?.asset;
+const Seed = ({ seed, assets, description, tags, statistics: { likes }, created }: ISeed) => {
+  const preview = assets?.find(({ type }) => type === SeedAssetType.PREVIEW)?.url;
 
   const [isSeedCopied, setSeedCopied] = useClipboard(seed, {
     successDuration: 1000,
   });
 
   const getPostedDuration = () => {
-    const createdDate: DateTime = created instanceof Date ? DateTime.fromJSDate(created) : created;
+    const createdDate: DateTime = typeof created === 'string' ? DateTime.fromISO(created) : undefined;
     const base = DateTime.now();
+    console.log(createdDate)
     const diff = base.diff(createdDate);
 
     const options: ToRelativeCalendarOptions = { base };
@@ -172,12 +72,23 @@ const Seed = ({ seed, assets, description, statistics: { likes }, dates: { creat
         </Button>
       } />
     </Card.Content>
+    {tags &&
+      <Card.Content>
+        <Label.Group circular>
+          {tags.map((tag) => <Label>{`#${tag}`}</Label>)}
+        </Label.Group>
+      </Card.Content>
+    }
   </Card>
 }
 
+
 const Seeds = () => {
+  const { data, isValidating } = useSWR<ISeed>('/api/seeds', { revalidateOnFocus: false, refreshWhenHidden: false, revalidateOnReconnect: false, refreshWhenOffline: false, revalidateOnMount: false });
 
-
+  if (!data) {
+    return <Loader active />
+  }
 
   return (
     <>

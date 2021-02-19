@@ -51,10 +51,12 @@ const Seed = ({ seed, assets, description, tags, statistics: { likes }, created,
     return <></>;
   }
 
+  const icon = <Icon className='link' name='trash' />;
+
   return <Card>
     <Image label={
       (user?.id === createdBy.id || user?.role === Role.ADMIN) &&
-      { as: 'a', color: 'red', corner: 'right', icon: 'trash', onClick: deleteSeed, size: 'large' }
+      { as: 'a', color: 'red', corner: 'right', icon, onClick: deleteSeed, size: 'large' }
     }
       src={preview} />
     <Card.Content>

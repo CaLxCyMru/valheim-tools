@@ -31,15 +31,14 @@ const options: InitOptions = {
     database: String(process.env.AUTH_DB_NAME),
     synchronize: Boolean(process.env.AUTH_DB_SYNCHRONIZE ?? false),
   }),
-  callbacks: {
-    signIn: async ({ id }: any, _account, { name, username, email }) => {
+  events: {
+    signIn: async ({ user: { id, name } }: any)=> {
       const connection = await createConnection();
       const now = DateTime.now().toJSDate();
-
-
+      
       const user: AuthUser = {
-        id, 
-        name: name ?? username ?? email,
+        id: id, 
+        name,
         created: now,
         updated: now,
         role: Role.USER,
@@ -51,9 +50,9 @@ const options: InitOptions = {
         .values(user)
         .orUpdate({ conflict_target: ['id'], overwrite: ['updated']})
         .execute();
-
-      return true;
-    },
+    }
+  },
+  callbacks: {
     session: async (session, { id }: any) => {
       if (!id) {
         throw new Error('Error whilst getting session - no id present');

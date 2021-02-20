@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Dates, IDates } from '../common/dates.model';
 import { ISeedAsset, SeedAsset } from './seed-asset.model';
-import { ISeedStatistics, SeedStatistics } from './seed-statistics.model';
+import { ISeedStatistic, SeedStatistic } from './seed-statistic.model';
 import { AuthUser, IAuthUser } from '../auth-user';
 
 export interface ISeed extends IDates {
@@ -17,7 +17,7 @@ export interface ISeed extends IDates {
   seed: string;
   description: string;
   tags?: string[];
-  statistics: ISeedStatistics;
+  statistics: ISeedStatistic;
   assets: ISeedAsset[];
   createdBy: IAuthUser;
 }
@@ -36,9 +36,9 @@ export class Seed extends Dates implements ISeed {
   @Column('simple-array', { nullable: true })
   public readonly tags?: string[];
 
-  @OneToOne(() => SeedStatistics, { eager: true })
+  @OneToOne(() => SeedStatistic, { eager: true })
   @JoinColumn()
-  public readonly statistics: SeedStatistics;
+  public readonly statistics: SeedStatistic;
 
   @OneToMany('SeedAsset', 'seed', { eager: true })
   public readonly assets: SeedAsset[];

@@ -1,12 +1,12 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-export interface ISeedStatistics {
+export interface ISeedStatistic {
   likes: number;
   dislikes: number;
 }
 
 @Entity()
-export class SeedStatistics implements ISeedStatistics {
+export class SeedStatistic implements ISeedStatistic {
   @PrimaryGeneratedColumn('uuid')
   public readonly id: string;
 

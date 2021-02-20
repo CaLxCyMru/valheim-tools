@@ -6,10 +6,10 @@ import {
   Repository,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import delay from 'delay';
 import { Seed } from '../../../models/seeds/seed.model';
-import { SeedStatistics } from '../../../models/seeds/seed-statistics.model';
+import { SeedStatistic } from '../../../models/seeds/seed-statistic.model';
 import { SeedAsset } from '../../../models/seeds/seed-asset.model';
+import delay from 'delay';
 // TODO: May need to be moved in future if we get more than one db
 import 'reflect-metadata';
 import { AuthUser } from '../../../models';
@@ -25,7 +25,7 @@ const config: ConnectionOptions = {
   database: String(process.env.SEEDS_DB_NAME),
   synchronize: Boolean(process.env.SEEDS_DB_SYNCHRONIZE ?? false),
   // TODO: Load via file
-  entities: [Seed, SeedAsset, SeedStatistics, AuthUser],
+  entities: [Seed, SeedAsset, SeedStatistic, AuthUser],
   name: uuid(),
 };
 
@@ -49,6 +49,7 @@ export const createConnection = async (): Promise<Connection> => {
     isConnecting = false;
     console.log('Got connection', DateTime.now().toISO());
   } catch (e) {
+    isConnecting = false;
     console.error('Could not create a connection with the database, check settings!', e);
     throw e;
   }

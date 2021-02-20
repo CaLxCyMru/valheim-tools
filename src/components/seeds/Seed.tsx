@@ -1,5 +1,5 @@
 import { DateTime, ToRelativeCalendarOptions } from 'luxon';
-import { session, useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/client';
 import React from 'react';
 import useClipboard from 'react-use-clipboard';
 import { Button, Card, Icon, Image, Label, Popup } from 'semantic-ui-react';
@@ -15,7 +15,7 @@ const Seed = ({
   statistics: { likes },
   created,
   createdBy,
-}: ISeed) => {
+}: ISeed): JSX.Element => {
   const [session] = useSession();
 
   const user = session?.user as SessionUser;
@@ -82,7 +82,7 @@ const Seed = ({
         <Card.Description>{description}</Card.Description>
       </Card.Content>
       <Card.Content extra>
-        <Card.Meta style={{ marginBottom: '10px' }}>Posted {getPostedDuration()}</Card.Meta>
+        <Card.Meta style={{ marginBottom: '5px' }}>Posted {getPostedDuration()}</Card.Meta>
         <Button as="div" labelPosition="right" onClick={() => alert('Like Button clicked')}>
           <Button icon>
             <Icon name="heart" /> Like
@@ -106,10 +106,10 @@ const Seed = ({
       </Card.Content>
       {tags && (
         <Card.Content>
-          <Card.Meta>Posted by {createdBy.name}</Card.Meta>
+          <Card.Meta style={{ marginBottom: '5px' }}>Posted by {createdBy.name}</Card.Meta>
           <Label.Group circular>
             {tags.map((tag) => (
-              <Label>{`#${tag}`}</Label>
+              <Label key={tag}>{`#${tag}`}</Label>
             ))}
           </Label.Group>
         </Card.Content>

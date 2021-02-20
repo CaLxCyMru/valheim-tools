@@ -20,6 +20,7 @@
     ]
   },
   "dependencies": {
+    "delay": "^5.0.0",
     "luxon": "^1.26.0",
     "mysql": "^2.18.1",
     "next": "10.0.6",
@@ -40,6 +41,7 @@
     "@babel/core": "^7.12.17",
     "@babel/plugin-proposal-class-properties": "^7.12.13",
     "@babel/plugin-proposal-decorators": "^7.12.13",
+    "@types/delay": "^3.1.0",
     "@types/luxon": "^1.26.0",
     "@types/next-auth": "^3.1.24",
     "@types/node": "^14.14.30",
@@ -54,6 +56,7 @@
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^1.7.0",
     "git-format-staged": "^2.1.1",

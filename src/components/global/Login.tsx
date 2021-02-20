@@ -13,23 +13,23 @@ const assetsPath = '/assets/login';
 const getLogoForProviders = (id: string) => {
   let logo: string;
   switch (id) {
-  case 'discord':
-    logo = 'discord.svg';
-    break;
-  case 'twitch':
-    logo = 'twitch.svg';
-    break;
-  case 'google':
-    logo = 'google.svg';
-    break;
-  default:
-    throw new Error(`Unable to get logo for provider with id '${id}'`);
+    case 'discord':
+      logo = 'discord.svg';
+      break;
+    case 'twitch':
+      logo = 'twitch.svg';
+      break;
+    case 'google':
+      logo = 'google.svg';
+      break;
+    default:
+      throw new Error(`Unable to get logo for provider with id '${id}'`);
   }
 
   return `${assetsPath}/${logo}`;
 };
 
-const Login = ({ providers }: LoginProps) => {
+const Login = ({ providers }: LoginProps): JSX.Element => {
   const [session, loading] = useSession();
 
   const [open, setOpen] = React.useState(false);

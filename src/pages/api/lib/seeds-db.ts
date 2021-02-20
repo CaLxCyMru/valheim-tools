@@ -3,8 +3,10 @@ import {
   createConnection as typeOrmCreateConnection,
   Connection,
   ConnectionOptions,
+  Repository,
 } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import delay from 'delay';
 import { Seed } from '../../../models/seeds/seed.model';
 import { SeedStatistics } from '../../../models/seeds/seed-statistics.model';
 import { SeedAsset } from '../../../models/seeds/seed-asset.model';
@@ -27,15 +29,24 @@ const config: ConnectionOptions = {
   name: uuid(),
 };
 
+let isConnecting: boolean;
+
 export const createConnection = async (): Promise<Connection> => {
   if (databaseConnection && databaseConnection.isConnected) {
     console.log('Re-using existing connection', DateTime.now().toISO());
     return databaseConnection;
   }
 
+  if (isConnecting) {
+    console.log('Already connecting to database, waiting 1000ms');
+    await delay(1000);
+    return await createConnection();
+  }
+
   try {
-    console.log('Starting connection', DateTime.now().toISO());
+    isConnecting = true;
     databaseConnection = await typeOrmCreateConnection(config);
+    isConnecting = false;
     console.log('Got connection', DateTime.now().toISO());
   } catch (e) {
     console.error('Could not create a connection with the database, check settings!', e);
@@ -45,7 +56,12 @@ export const createConnection = async (): Promise<Connection> => {
   if (!databaseConnection) {
     throw new Error('Database connection still does not exist!');
   }
-  console.log('Returning connection', DateTime.now().toISO());
 
   return databaseConnection;
+};
+
+export const getRepo = async (): Promise<Repository<Seed>> => {
+  const connection = await createConnection();
+  const repo = connection.getRepository(Seed);
+  return repo;
 };

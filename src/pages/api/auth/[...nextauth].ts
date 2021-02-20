@@ -1,9 +1,11 @@
 import { DateTime } from 'luxon';
+import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { InitOptions } from 'next-auth';
 import Adapters from 'next-auth/adapters';
 import Providers from 'next-auth/providers';
 import { Role } from '../../../enums';
 import { AuthUser } from '../../../models';
+import { Session } from '../../../types';
 import { createConnection } from '../lib/seeds-db';
 
 const options: InitOptions = {
@@ -32,7 +34,7 @@ const options: InitOptions = {
     synchronize: Boolean(process.env.AUTH_DB_SYNCHRONIZE ?? false),
   }),
   events: {
-    signIn: async ({ user: { id, name } }: any) => {
+    signIn: async ({ user: { id, name } }) => {
       const connection = await createConnection();
       const now = DateTime.now().toJSDate();
 
@@ -54,10 +56,11 @@ const options: InitOptions = {
     },
   },
   callbacks: {
-    session: async (session: any, { id }: any) => {
+    session: async (sessionData, { id }: { [key: string]: string | number }) => {
       if (!id) {
         throw new Error('Error whilst getting session - no id present');
       }
+      const session = sessionData as Session;
 
       session.user.id = id;
 
@@ -66,14 +69,12 @@ const options: InitOptions = {
         const repo = connection.getRepository(AuthUser);
         session.user.role = (await repo.findByIds([id]))[0].role;
       } catch (error) {
-        console.error(`Error whilst fetching roles for user with id ${id}`, error);
         session.user.role = Role.USER;
       }
 
-      console.log(session);
       return session;
     },
   },
 };
 
-export default (req, res) => NextAuth(req, res, options);
+export default (req: NextApiRequest, res: NextApiResponse): unknown => NextAuth(req, res, options);

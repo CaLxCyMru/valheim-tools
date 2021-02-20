@@ -11,13 +11,16 @@ import { WithProviders } from '../types';
 
 export type ValheimToolsAppProps = AppProps & WithProviders;
 
-function ValheimToolsApp({ Component, pageProps, providers }: ValheimToolsAppProps) {
+function ValheimToolsApp({
+  Component,
+  pageProps,
+  providers: appProviders,
+}: ValheimToolsAppProps): JSX.Element {
   return (
     <SWRConfig
       value={{
         refreshInterval: 3000,
-        // @ts-ignore
-        fetcher: (...args) => fetch(...args).then((res) => res.json()),
+        fetcher: (...args: Parameters<typeof fetch>) => fetch(...args).then((res) => res.json()),
       }}
     >
       <Provider
@@ -32,7 +35,7 @@ function ValheimToolsApp({ Component, pageProps, providers }: ValheimToolsAppPro
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Component {...pageProps} providers={providers} />
+        <Component {...pageProps} providers={appProviders} />
       </Provider>
     </SWRConfig>
   );

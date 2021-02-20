@@ -7,7 +7,7 @@ import styles from '../../styles/components/global/Header.module.scss';
 import { WithProviders } from '../../types';
 import Login from './Login';
 
-type HeaderProps = {} & WithProviders & WithRouterProps;
+type HeaderProps = WithProviders & WithRouterProps;
 
 const Header = ({ providers, router }: HeaderProps) => {
   const page = router.pathname;

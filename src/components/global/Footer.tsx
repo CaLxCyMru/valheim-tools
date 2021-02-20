@@ -6,7 +6,7 @@ import styles from '../../styles/components/global/Footer.module.scss';
 
 // };
 
-const Footer = () => (
+const Footer = (): JSX.Element => (
   <Segment inverted vertical className={`${styles.footer}`}>
     <Container>
       &copy; {new Date().getUTCFullYear()} Valheim Tools. Not Affiliated with Valheim/Iron Gate

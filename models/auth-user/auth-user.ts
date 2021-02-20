@@ -1,10 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
-import { Role } from "../../enums";
-import { Dates, IDates } from "../common/dates.model";
-import { ISeed, Seed } from "../seeds";
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Role } from '../../enums';
+import { Dates, IDates } from '../common/dates.model';
+import { ISeed, Seed } from '../seeds';
 
 export interface IAuthUser extends IDates {
-  id: number
+  id: number;
   name: string;
   seeds?: ISeed[];
 }

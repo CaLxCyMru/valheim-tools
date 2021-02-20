@@ -1,7 +1,15 @@
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Dates, IDates } from '../common/dates.model';
 import { ISeedAsset, SeedAsset } from './seed-asset.model';
 import { ISeedStatistics, SeedStatistics } from './seed-statistics.model';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { AuthUser, IAuthUser } from '../auth-user';
 
 export interface ISeed extends IDates {

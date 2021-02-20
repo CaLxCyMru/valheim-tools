@@ -1,5 +1,5 @@
-import { Seed } from './seed.model';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Seed } from './seed.model';
 import { SeedAssetType } from '../../enums';
 
 export interface ISeedAsset {

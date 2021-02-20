@@ -32,47 +32,48 @@ const options: InitOptions = {
     synchronize: Boolean(process.env.AUTH_DB_SYNCHRONIZE ?? false),
   }),
   events: {
-    signIn: async ({ user: { id, name } }: any)=> {
+    signIn: async ({ user: { id, name } }: any) => {
       const connection = await createConnection();
       const now = DateTime.now().toJSDate();
-      
+
       const user: AuthUser = {
-        id: id, 
+        id,
         name,
         created: now,
         updated: now,
         role: Role.USER,
       };
 
-      await connection.createQueryBuilder()
+      await connection
+        .createQueryBuilder()
         .insert()
         .into(AuthUser)
         .values(user)
-        .orUpdate({ conflict_target: ['id'], overwrite: ['updated']})
+        .orUpdate({ conflict_target: ['id'], overwrite: ['updated'] })
         .execute();
-    }
+    },
   },
   callbacks: {
-    session: async (session, { id }: any) => {
+    session: async (session: any, { id }: any) => {
       if (!id) {
         throw new Error('Error whilst getting session - no id present');
       }
 
-      session.user['id'] = id;
-      
-      try { 
-      const connection = await createConnection();
-      const repo = connection.getRepository(AuthUser);
-      session.user['role'] = (await repo.findByIds([id]))[0].role;
+      session.user.id = id;
+
+      try {
+        const connection = await createConnection();
+        const repo = connection.getRepository(AuthUser);
+        session.user.role = (await repo.findByIds([id]))[0].role;
       } catch (error) {
         console.error(`Error whilst fetching roles for user with id ${id}`, error);
-        session.user['role'] = Role.USER;
+        session.user.role = Role.USER;
       }
-      
+
       console.log(session);
       return session;
-    }
-  }
+    },
+  },
 };
 
 export default (req, res) => NextAuth(req, res, options);

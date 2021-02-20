@@ -8,23 +8,18 @@ import styles from '../styles/pages/Home.module.scss';
 
 const Seeds = () => {
   // TODO: Look into SWR to ensure that we do not spam the server every 2 seconds
-  const { data } = useSWR<ISeed[]>('/api/seeds', {
-    revalidateOnFocus: false,
-    refreshWhenHidden: false,
-    revalidateOnReconnect: false,
-    refreshWhenOffline: false,
-    revalidateOnMount: false
-  });
+  const { data } = useSWR<ISeed[]>('/api/seeds');
 
   if (!data) {
-    return <Loader active />
+    return <Loader active />;
   }
 
   return (
     <>
       <h1>Seeds</h1>
       <p>
-        A seed is a random generated text which is used to procedurally generated generated Valheim world.
+        A seed is a random generated text which is used to procedurally generated generated Valheim
+        world.
       </p>
       <Divider />
       <Statistic.Group>
@@ -34,11 +29,14 @@ const Seeds = () => {
         </Statistic>
       </Statistic.Group>
       <Card.Group className={styles.seeds}>
-        {data.sort((first, second) => second.statistics.likes - first.statistics.likes).map((seed) => <Seed key={seed.id} {...seed} />)}
-      </Card.Group >
+        {data
+          .sort((first, second) => second.statistics.likes - first.statistics.likes)
+          .map((seed) => (
+            <Seed key={seed.id} {...seed} />
+          ))}
+      </Card.Group>
     </>
   );
-}
+};
 
 export default withLayout(Seeds);
-

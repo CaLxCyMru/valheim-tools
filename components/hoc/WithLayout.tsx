@@ -1,7 +1,7 @@
-import React, { createRef } from "react";
-import { Container, Segment } from "semantic-ui-react";
-import { Footer, Header } from "../global";
+import React, { createRef } from 'react';
+import { Container, Segment } from 'semantic-ui-react';
 import styles from '../../styles/hoc/WithLayout.module.scss';
+import { Footer, Header } from '../global';
 
 export const withLayout = (Page) => {
   const appRef: React.Ref<any> = createRef();
@@ -16,5 +16,5 @@ export const withLayout = (Page) => {
       </Segment>
       <Footer />
     </div>
-  );;
-}
+  );
+};

@@ -1,13 +1,21 @@
 import { DateTime, ToRelativeCalendarOptions } from 'luxon';
 import { session, useSession } from 'next-auth/client';
 import React from 'react';
-import useClipboard from "react-use-clipboard";
+import useClipboard from 'react-use-clipboard';
 import { Button, Card, Icon, Image, Label, Popup } from 'semantic-ui-react';
 import { Role, SeedAssetType } from '../../enums';
 import { ISeed } from '../../models';
 import { SessionUser } from '../../types';
 
-const Seed = ({ seed, assets, description, tags, statistics: { likes }, created, createdBy }: ISeed) => {
+const Seed = ({
+  seed,
+  assets,
+  description,
+  tags,
+  statistics: { likes },
+  created,
+  createdBy,
+}: ISeed) => {
   const [session] = useSession();
 
   const user = session?.user as SessionUser;
@@ -22,7 +30,8 @@ const Seed = ({ seed, assets, description, tags, statistics: { likes }, created,
   const [deleted, setDeleted] = React.useState(false);
 
   const getPostedDuration = () => {
-    const createdDate: DateTime = typeof created === 'string' ? DateTime.fromISO(created) : undefined;
+    const createdDate: DateTime =
+      typeof created === 'string' ? DateTime.fromISO(created) : undefined;
     const base = DateTime.now();
     const diff = base.diff(createdDate);
 
@@ -51,55 +60,62 @@ const Seed = ({ seed, assets, description, tags, statistics: { likes }, created,
     return <></>;
   }
 
-  const icon = <Icon className='link' name='trash' />;
+  const icon = <Icon className="link" name="trash" />;
 
-  return <Card>
-    <Image label={
-      (user?.id === createdBy.id || user?.role === Role.ADMIN) &&
-      { as: 'a', color: 'red', corner: 'right', icon, onClick: deleteSeed, size: 'large' }
-    }
-      src={preview} />
-    <Card.Content>
-      <Card.Header>{seed}</Card.Header>
-      <Card.Description>
-        {description}
-      </Card.Description>
-    </Card.Content>
-    <Card.Content extra>
-      <Card.Meta style={{ marginBottom: '10px' }}>
-        Posted {getPostedDuration()}
-      </Card.Meta>
-      <Button as='div' labelPosition='right' onClick={() => alert('Like Button clicked')}>
-        <Button icon>
-          <Icon name='heart' />{' '}
-          Like
-        </Button>
-        <Label basic pointing='left'>
-          {likes}
-        </Label>
-      </Button>
-      <Popup content='Seed Copied' open={isSeedCopied} trigger={
-        <Button as='div' labelPosition='right' onClick={setSeedCopied} floated='right'>
-          <Button>
-            Copy
+  return (
+    <Card>
+      <Image
+        label={
+          (user?.id === createdBy.id || user?.role === Role.ADMIN) && {
+            as: 'a',
+            color: 'red',
+            corner: 'right',
+            icon,
+            onClick: deleteSeed,
+            size: 'large',
+          }
+        }
+        src={preview}
+      />
+      <Card.Content>
+        <Card.Header>{seed}</Card.Header>
+        <Card.Description>{description}</Card.Description>
+      </Card.Content>
+      <Card.Content extra>
+        <Card.Meta style={{ marginBottom: '10px' }}>Posted {getPostedDuration()}</Card.Meta>
+        <Button as="div" labelPosition="right" onClick={() => alert('Like Button clicked')}>
+          <Button icon>
+            <Icon name="heart" /> Like
           </Button>
-          <Label as='a'>
-            <Icon name='clipboard' />
+          <Label basic pointing="left">
+            {likes}
           </Label>
         </Button>
-      } />
-    </Card.Content>
-    {tags &&
-      <Card.Content>
-        <Card.Meta>
-          Posted by {createdBy.name}
-        </Card.Meta>
-        <Label.Group circular>
-          {tags.map((tag) => <Label>{`#${tag}`}</Label>)}
-        </Label.Group>
+        <Popup
+          content="Seed Copied"
+          open={isSeedCopied}
+          trigger={
+            <Button as="div" labelPosition="right" onClick={setSeedCopied} floated="right">
+              <Button>Copy</Button>
+              <Label as="a">
+                <Icon name="clipboard" />
+              </Label>
+            </Button>
+          }
+        />
       </Card.Content>
-    }
-  </Card>
-}
+      {tags && (
+        <Card.Content>
+          <Card.Meta>Posted by {createdBy.name}</Card.Meta>
+          <Label.Group circular>
+            {tags.map((tag) => (
+              <Label>{`#${tag}`}</Label>
+            ))}
+          </Label.Group>
+        </Card.Content>
+      )}
+    </Card>
+  );
+};
 
 export default Seed;

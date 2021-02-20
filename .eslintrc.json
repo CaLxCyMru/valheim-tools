@@ -25,7 +25,7 @@
             "node": {
                 "paths": [
                     "components",
-                    "styles",
+                    "styles"
                 ],
                 "extensions": [
                     ".js",

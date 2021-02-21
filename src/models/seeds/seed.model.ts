@@ -20,6 +20,7 @@ import { ISeedStatistic, SeedStatistic } from './seed-statistic.model';
 export interface ISeed extends IDates {
   id: string;
   seed: string;
+  title?: string;
   description: string;
   tags?: string[];
   statistics?: ISeedStatistic[];
@@ -44,9 +45,18 @@ export class Seed extends Dates implements ISeed {
   @Column({ unique: true })
   public readonly seed: string;
 
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(64)
+  @Column()
+  public readonly title: string;
+
   @IsNotEmpty()
   @IsString()
-  @Column()
+  @MinLength(1)
+  @MaxLength(10000)
+  @Column('text')
   public readonly description: string;
 
   @IsOptional()
@@ -57,20 +67,17 @@ export class Seed extends Dates implements ISeed {
 
   @IsOptional()
   @IsArray()
-  // @Type(() => SeedStatistic)
   @ValidateNested({ each: true })
   @OneToMany('SeedStatistic', 'seed', { eager: true })
   public readonly statistics?: SeedStatistic[];
 
   @IsDefined()
   @IsArray()
-  // @Type(() => SeedAsset)
   @ValidateNested({ each: true })
   @OneToMany('SeedAsset', 'seed', { eager: true, cascade: ['insert', 'remove', 'update'] })
   public readonly assets: SeedAsset[];
 
   @IsOptional()
-  // @Type(() => AuthUser)
   @ManyToOne('AuthUser', 'seeds', { eager: true })
   public readonly createdBy: AuthUser | string | number;
 

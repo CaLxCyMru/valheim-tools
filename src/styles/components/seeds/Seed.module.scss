@@ -1,0 +1,13 @@
+.seed {
+  .title {
+    margin-top: 5px !important;
+    font-size: 14px !important;
+  }
+
+  .description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}

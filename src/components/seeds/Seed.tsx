@@ -7,9 +7,11 @@ import { SeedAssetType, Role } from '../../enums';
 import { AuthUser } from '../../models';
 import { ISeed } from '../../models/seeds/seed.model';
 import { SessionUser } from '../../types';
+import styles from '../../styles/components/seeds/Seed.module.scss';
 
 const Seed = ({
   seed,
+  title,
   assets,
   description,
   tags,
@@ -64,7 +66,7 @@ const Seed = ({
   const icon = <Icon className="link" name="trash" />;
 
   return (
-    <Card>
+    <Card className={styles.seed}>
       <Image
         label={
           (user?.id === (createdBy as AuthUser).id || user?.role === Role.ADMIN) && {
@@ -80,7 +82,8 @@ const Seed = ({
       />
       <Card.Content>
         <Card.Header>{seed}</Card.Header>
-        <Card.Description>{description}</Card.Description>
+        {title && <Card.Header className={styles.title}>{title}</Card.Header>}
+        <Card.Description className={styles.description}>{description}</Card.Description>
       </Card.Content>
       <Card.Content extra>
         <Card.Meta style={{ marginBottom: '5px' }}>Posted {getPostedDuration()}</Card.Meta>

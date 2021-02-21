@@ -2,7 +2,7 @@
   {
     "maxAgeSeconds": 3600,
     "method": ["GET", "PUT", "POST", "HEAD", "DELETE"],
-    "origin": ["*"],
+    "origin": ["http://localhost:3000", "https://dev.valheim.tools"],
     "responseHeader": ["*"]
   }
 ]

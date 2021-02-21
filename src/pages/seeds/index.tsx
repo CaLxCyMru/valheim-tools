@@ -5,9 +5,8 @@ import { withLayout } from '../../components';
 import { Seed } from '../../components/seeds';
 import { ISeed } from '../../models/seeds/seed.model';
 import styles from '../../styles/pages/Home.module.scss';
-import fetch from 'unfetch';
+
 const Seeds = () => {
-  // TODO: Look into SWR to ensure that we do not spam the server every 2 seconds
   const { data } = useSWR<ISeed[]>('/api/seeds');
 
   if (!data) {

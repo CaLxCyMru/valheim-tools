@@ -3,8 +3,9 @@ import { useSession } from 'next-auth/client';
 import React from 'react';
 import useClipboard from 'react-use-clipboard';
 import { Button, Card, Icon, Image, Label, Popup } from 'semantic-ui-react';
-import { Role, SeedAssetType } from '../../enums';
-import { ISeed } from '../../models';
+import { SeedAssetType, Role } from '../../enums';
+import { AuthUser } from '../../models';
+import { ISeed } from '../../models/seeds/seed.model';
 import { SessionUser } from '../../types';
 
 const Seed = ({
@@ -12,7 +13,7 @@ const Seed = ({
   assets,
   description,
   tags,
-  statistics: { likes },
+  overview,
   created,
   createdBy,
 }: ISeed): JSX.Element => {
@@ -20,7 +21,7 @@ const Seed = ({
 
   const user = session?.user as SessionUser;
 
-  const preview = assets?.find(({ type }) => type === SeedAssetType.PREVIEW)?.url;
+  const preview = assets?.find(({ type }) => type === SeedAssetType.PREVIEW)?.path;
 
   const [isSeedCopied, setSeedCopied] = useClipboard(seed, {
     successDuration: 1000,
@@ -66,7 +67,7 @@ const Seed = ({
     <Card>
       <Image
         label={
-          (user?.id === createdBy.id || user?.role === Role.ADMIN) && {
+          (user?.id === (createdBy as AuthUser).id || user?.role === Role.ADMIN) && {
             as: 'a',
             color: 'red',
             corner: 'right',
@@ -75,7 +76,7 @@ const Seed = ({
             size: 'large',
           }
         }
-        src={preview}
+        src={`${process.env.NEXT_PUBLIC_SEED_ASSET_BASE_URL}/${preview}`}
       />
       <Card.Content>
         <Card.Header>{seed}</Card.Header>
@@ -88,7 +89,7 @@ const Seed = ({
             <Icon name="heart" /> Like
           </Button>
           <Label basic pointing="left">
-            {likes}
+            {overview?.likes ?? '0'}
           </Label>
         </Button>
         <Popup
@@ -104,16 +105,18 @@ const Seed = ({
           }
         />
       </Card.Content>
-      {tags && (
-        <Card.Content>
-          <Card.Meta style={{ marginBottom: '5px' }}>Posted by {createdBy.name}</Card.Meta>
+      <Card.Content>
+        <Card.Meta style={{ marginBottom: '5px' }}>
+          Posted by {(createdBy as AuthUser).name}
+        </Card.Meta>
+        {tags && (
           <Label.Group circular>
             {tags.map((tag) => (
               <Label key={tag}>{`#${tag}`}</Label>
             ))}
           </Label.Group>
-        </Card.Content>
-      )}
+        )}
+      </Card.Content>
     </Card>
   );
 };

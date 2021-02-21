@@ -4,7 +4,7 @@ import NextAuth, { InitOptions } from 'next-auth';
 import Adapters from 'next-auth/adapters';
 import Providers from 'next-auth/providers';
 import { Role } from '../../../enums';
-import { AuthUser } from '../../../models';
+import { AuthUser } from '../../../models/auth-user/auth-user.model';
 import { Session } from '../../../types';
 import { createConnection } from '../lib/seeds-db';
 

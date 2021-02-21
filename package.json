@@ -19,9 +19,14 @@
       "git add"
     ]
   },
+  "type": "commonjs",
   "dependencies": {
+    "@google-cloud/storage": "^5.8.0",
+    "class-transformer": "^0.4.0",
+    "class-validator": "^0.13.1",
     "delay": "^5.0.0",
     "luxon": "^1.26.0",
+    "mime-types": "^2.1.29",
     "mysql": "^2.18.1",
     "next": "10.0.6",
     "next-auth": "^3.4.1",
@@ -43,6 +48,7 @@
     "@babel/plugin-proposal-decorators": "^7.12.13",
     "@types/delay": "^3.1.0",
     "@types/luxon": "^1.26.0",
+    "@types/mime-types": "^2.1.0",
     "@types/next-auth": "^3.1.24",
     "@types/node": "^14.14.30",
     "@types/react": "^17.0.2",

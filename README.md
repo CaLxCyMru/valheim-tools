@@ -32,3 +32,46 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+# Google Storage
+
+1. Download Google Cloud SDK
+
+https://cloud.google.com/sdk/docs/install
+
+### Debian/Ubuntu (Tested in WSL2)
+
+```
+echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+
+sudo apt-get install apt-transport-https ca-certificates gnupg
+
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+
+sudo apt-get update && sudo apt-get install google-cloud-sdk
+
+gcloud init
+
+```
+
+2. Switch to use the valheim tools project
+
+```
+
+```
+
+## Removing Cors from Bucket
+
+1. https://cloud.google.com/storage/docs/configuring-cors for more info
+
+2. Ensure that a file is created in `deployment/dev.cors.json` with the following content;
+
+```
+[]
+```
+
+3. Run the following command against the Valheim Tools project;
+
+```
+gsutil cors set deployment/seeds.dev.valheim.tools.cors.json gs://seeds.dev.valheim.tools
+```

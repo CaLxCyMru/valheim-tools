@@ -4,15 +4,14 @@ import {
   Connection,
   ConnectionOptions,
   Repository,
+  EntityTarget,
 } from 'typeorm';
-import { v4 as uuid } from 'uuid';
-import { Seed } from '../../../models/seeds/seed.model';
-import { SeedStatistic } from '../../../models/seeds/seed-statistic.model';
-import { SeedAsset } from '../../../models/seeds/seed-asset.model';
-import delay from 'delay';
-// TODO: May need to be moved in future if we get more than one db
 import 'reflect-metadata';
-import { AuthUser } from '../../../models';
+import { v4 as uuid } from 'uuid';
+import { Seed, SeedStatistic, SeedAsset, AuthUser } from '../../../models';
+
+import delay from 'delay';
+import { SeedOverview } from '../../../models/seeds/seed-overview.model';
 
 let databaseConnection: Connection;
 
@@ -25,7 +24,7 @@ const config: ConnectionOptions = {
   database: String(process.env.SEEDS_DB_NAME),
   synchronize: Boolean(process.env.SEEDS_DB_SYNCHRONIZE ?? false),
   // TODO: Load via file
-  entities: [Seed, SeedAsset, SeedStatistic, AuthUser],
+  entities: [Seed, SeedAsset, SeedStatistic, SeedOverview, AuthUser],
   name: uuid(),
 };
 
@@ -61,8 +60,10 @@ export const createConnection = async (): Promise<Connection> => {
   return databaseConnection;
 };
 
-export const getRepo = async (): Promise<Repository<Seed>> => {
+export const getRepo = async <T extends any = Seed>(
+  type: EntityTarget<T> = Seed,
+): Promise<Repository<T>> => {
   const connection = await createConnection();
-  const repo = connection.getRepository(Seed);
+  const repo = connection.getRepository(type);
   return repo;
 };

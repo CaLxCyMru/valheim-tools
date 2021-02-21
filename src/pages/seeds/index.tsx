@@ -1,11 +1,11 @@
 import React from 'react';
 import { Card, Divider, Loader, Statistic } from 'semantic-ui-react';
 import useSWR from 'swr';
-import { withLayout } from '../components';
-import { Seed } from '../components/seeds';
-import { ISeed } from '../models';
-import styles from '../styles/pages/Home.module.scss';
-
+import { withLayout } from '../../components';
+import { Seed } from '../../components/seeds';
+import { ISeed } from '../../models/seeds/seed.model';
+import styles from '../../styles/pages/Home.module.scss';
+import fetch from 'unfetch';
 const Seeds = () => {
   // TODO: Look into SWR to ensure that we do not spam the server every 2 seconds
   const { data } = useSWR<ISeed[]>('/api/seeds');
@@ -28,12 +28,11 @@ const Seeds = () => {
           <Statistic.Label>Seeds submitted</Statistic.Label>
         </Statistic>
       </Statistic.Group>
+
       <Card.Group className={styles.seeds}>
-        {data
-          .sort((first, second) => second.statistics.likes - first.statistics.likes)
-          .map((seed) => (
-            <Seed key={seed.id} {...seed} />
-          ))}
+        {data.map((seed) => (
+          <Seed key={seed.id} {...seed} />
+        ))}
       </Card.Group>
     </>
   );

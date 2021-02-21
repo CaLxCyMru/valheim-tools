@@ -80,6 +80,9 @@ const CreateSeed = () => {
 
     const data = await response.json();
     console.log(data);
+    if (data) {
+      alert('Uploaded');
+    }
   };
 
   // TODO: Add type
@@ -97,6 +100,15 @@ const CreateSeed = () => {
           name="seed"
           label={'Seed'}
           placeholder="Seed"
+          onChange={onFormChange}
+        />
+        <Form.Field
+          control={Input}
+          className={styles.input}
+          required
+          name="title"
+          label={'Title'}
+          placeholder="Short title that explains the seed"
           onChange={onFormChange}
         />
         <Form.Field

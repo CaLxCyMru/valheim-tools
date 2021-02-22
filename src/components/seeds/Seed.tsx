@@ -86,7 +86,9 @@ const Seed = ({
         <Card.Description className={styles.description}>{description}</Card.Description>
       </Card.Content>
       <Card.Content extra>
-        <Card.Meta style={{ marginBottom: '5px' }}>Posted {getPostedDuration()}</Card.Meta>
+        <Card.Meta style={{ marginBottom: '5px' }}>
+          Posted {getPostedDuration()} by {(createdBy as AuthUser).name}
+        </Card.Meta>
         <Button as="div" labelPosition="right" onClick={() => alert('Like Button clicked')}>
           <Button icon>
             <Icon name="heart" /> Like
@@ -109,9 +111,6 @@ const Seed = ({
         />
       </Card.Content>
       <Card.Content>
-        <Card.Meta style={{ marginBottom: '5px' }}>
-          Posted by {(createdBy as AuthUser).name}
-        </Card.Meta>
         {tags && (
           <Label.Group circular>
             {tags.map((tag) => (

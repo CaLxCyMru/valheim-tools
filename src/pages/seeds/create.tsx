@@ -92,13 +92,15 @@ const CreateSeed = () => {
 
     const data = await response.json();
     console.log(data);
-    if (data) {
+    if (data?.data && !data?.error) {
       alert('Uploaded');
       setFormData({});
       setPreviewAsset(undefined);
       setValidated(undefined);
       setSeedTags(undefined);
+      return;
     }
+    alert(data);
   };
 
   const tagOptions = (): DropdownItemProps[] =>

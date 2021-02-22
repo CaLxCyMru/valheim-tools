@@ -1,16 +1,27 @@
 import React from 'react';
-import { Button, Form, Icon, Input, TextArea } from 'semantic-ui-react';
+import {
+  Button,
+  Dropdown,
+  DropdownItemProps,
+  Form,
+  Icon,
+  Input,
+  TextArea,
+} from 'semantic-ui-react';
+import useSWR from 'swr';
 import fetch from 'unfetch';
 import { v4 as uuid } from 'uuid';
 import { withAuth, withLayout } from '../../components';
 import { SeedAssetType } from '../../enums';
-import { ISeed, ISeedAsset } from '../../models';
+import { ISeed, ISeedAsset, ISeedTag } from '../../models';
 import styles from '../../styles/pages/CreateSeed.module.scss';
 
 const CreateSeed = () => {
+  const { data: tags } = useSWR<ISeedTag[]>('/api/seeds/tags');
   const [validated, setValidated] = React.useState(undefined);
   const [formData, setFormData] = React.useState<Partial<ISeed>>({});
   const [previewAsset, setPreviewAsset] = React.useState(undefined);
+  const [seedTags, setSeedTags] = React.useState<[]>(undefined);
 
   const onFormChange = (_e: unknown, { name, value }) =>
     setFormData({ ...formData, [name]: value });
@@ -66,6 +77,7 @@ const CreateSeed = () => {
     const seed: Partial<ISeed> = {
       ...formData,
       assets,
+      tags: seedTags,
     };
 
     // Now let's create our seed
@@ -82,13 +94,22 @@ const CreateSeed = () => {
     console.log(data);
     if (data) {
       alert('Uploaded');
+      setFormData({});
+      setPreviewAsset(undefined);
+      setValidated(undefined);
+      setSeedTags(undefined);
     }
   };
+
+  const tagOptions = (): DropdownItemProps[] =>
+    tags.map(({ id, tag }) => ({ key: id, text: tag, value: id }));
 
   // TODO: Add type
   const fileChange = (e) => {
     setPreviewAsset(e.target.files[0]);
   };
+
+  const tagsChanged = (e, { value }) => setSeedTags(value.map((id: string) => ({ id })));
 
   return (
     <div className={styles.createSeed}>
@@ -136,13 +157,21 @@ const CreateSeed = () => {
           readOnly
           value={previewAsset?.name ?? ''}
         />
+        {tags && (
+          <Dropdown
+            placeholder="Tags"
+            onChange={tagsChanged}
+            fluid
+            multiple
+            selection
+            options={tagOptions()}
+          />
+        )}
         <Form.Field control={Button} type="submit">
           Submit
         </Form.Field>
       </Form>
-      {JSON.stringify(formData)}
-      <br />
-      Validated: {validated}
+      {validated === false && <p>Please check the form as not all required fields are present </p>}
     </div>
   );
 };

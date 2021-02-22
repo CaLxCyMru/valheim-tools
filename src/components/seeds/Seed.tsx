@@ -113,8 +113,8 @@ const Seed = ({
       <Card.Content>
         {tags && (
           <Label.Group circular>
-            {tags.map((tag) => (
-              <Label key={tag}>{`#${tag}`}</Label>
+            {tags.map(({ id, tag }) => (
+              <Label key={id}>{`#${tag}`}</Label>
             ))}
           </Label.Group>
         )}

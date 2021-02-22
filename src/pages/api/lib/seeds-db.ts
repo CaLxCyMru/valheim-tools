@@ -1,17 +1,17 @@
+import delay from 'delay';
 import { DateTime } from 'luxon';
+import 'reflect-metadata';
 import {
-  createConnection as typeOrmCreateConnection,
   Connection,
   ConnectionOptions,
-  Repository,
+  createConnection as typeOrmCreateConnection,
   EntityTarget,
+  Repository,
 } from 'typeorm';
-import 'reflect-metadata';
 import { v4 as uuid } from 'uuid';
-import { Seed, SeedStatistic, SeedAsset, AuthUser } from '../../../models';
-
-import delay from 'delay';
+import { AuthUser, Seed, SeedAsset, SeedStatistic } from '../../../models';
 import { SeedOverview } from '../../../models/seeds/seed-overview.model';
+import { SeedTag } from '../../../models/seeds/seed-tag.models';
 
 let databaseConnection: Connection;
 
@@ -24,7 +24,7 @@ const config: ConnectionOptions = {
   database: String(process.env.SEEDS_DB_NAME),
   synchronize: Boolean(process.env.SEEDS_DB_SYNCHRONIZE ?? false),
   // TODO: Load via file
-  entities: [Seed, SeedAsset, SeedStatistic, SeedOverview, AuthUser],
+  entities: [Seed, SeedAsset, SeedStatistic, SeedOverview, AuthUser, SeedTag],
   name: uuid(),
 };
 

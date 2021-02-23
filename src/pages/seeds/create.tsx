@@ -93,7 +93,7 @@ const CreateSeed = () => {
     const data = await response.json();
     console.log(data);
     if (data?.data && !data?.error) {
-      alert('Uploaded');
+      alert('Uploaded Seed');
       setFormData({});
       setPreviewAsset(undefined);
       setValidated(undefined);

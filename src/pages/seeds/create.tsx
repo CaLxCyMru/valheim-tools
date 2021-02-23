@@ -1,3 +1,5 @@
+import { plainToClass } from 'class-transformer';
+import { validate, ValidationError } from 'class-validator';
 import React from 'react';
 import {
   Button,
@@ -13,8 +15,9 @@ import fetch from 'unfetch';
 import { v4 as uuid } from 'uuid';
 import { withAuth, withLayout } from '../../components';
 import { SeedAssetType } from '../../enums';
-import { ISeed, ISeedAsset, ISeedTag } from '../../models';
+import { ISeed, ISeedAsset, ISeedTag, Seed } from '../../models';
 import styles from '../../styles/pages/CreateSeed.module.scss';
+import { capitalize } from '../../utils';
 
 const CreateSeed = () => {
   const { data: tags } = useSWR<ISeedTag[]>('/api/seeds/tags');
@@ -22,9 +25,25 @@ const CreateSeed = () => {
   const [formData, setFormData] = React.useState<Partial<ISeed>>({});
   const [previewAsset, setPreviewAsset] = React.useState(undefined);
   const [seedTags, setSeedTags] = React.useState<[]>(undefined);
+  const [validationErrors, setValidationErrors] = React.useState<ValidationError[]>(undefined);
 
-  const onFormChange = (_e: unknown, { name, value }) =>
+  const validateForm = async () => {
+    const { seed, title, description } = formData;
+    const parsed = plainToClass<Partial<Seed>, Partial<ISeed>>(Seed, {
+      seed: seed ?? undefined,
+      title: title ?? undefined,
+      description: description ?? undefined,
+      assets: previewAsset ? [previewAsset] : undefined,
+    });
+
+    setValidationErrors(await validate(parsed, { skipUndefinedProperties: true }));
+    console.log(validationErrors);
+  };
+
+  const onFormChange = (_e: unknown, { name, value }) => {
     setFormData({ ...formData, [name]: value });
+    validateForm();
+  };
 
   const uploadAsset = async (file, type: SeedAssetType): Promise<ISeedAsset> => {
     const { seed } = formData;
@@ -54,6 +73,19 @@ const CreateSeed = () => {
     }
 
     return { id, type, path };
+  };
+
+  const getValidationErrorForField = (field: string): string | undefined => {
+    const validationError = validationErrors?.find(
+      ({ property, constraints }) =>
+        field === property && constraints && Object.keys(constraints).length,
+    );
+
+    if (!validationError) {
+      return undefined;
+    }
+
+    return capitalize(Object.values(validationError.constraints)[0]);
   };
 
   const uploadAssets = async (): Promise<ISeedAsset[]> => {
@@ -124,6 +156,7 @@ const CreateSeed = () => {
           label={'Seed'}
           placeholder="Seed"
           onChange={onFormChange}
+          error={getValidationErrorForField('seed')}
         />
         <Form.Field
           control={Input}
@@ -133,6 +166,7 @@ const CreateSeed = () => {
           label={'Title'}
           placeholder="Short title that explains the seed"
           onChange={onFormChange}
+          error={getValidationErrorForField('title')}
         />
         <Form.Field
           control={TextArea}
@@ -142,6 +176,7 @@ const CreateSeed = () => {
           label={'Description'}
           placeholder="Explain the seed in detail"
           onChange={onFormChange}
+          error={getValidationErrorForField('description')}
         />
         <Form.Field>
           <Button as="label" htmlFor="file" type="button" animated="fade">
@@ -158,6 +193,7 @@ const CreateSeed = () => {
           placeholder="Use the above bar to browse your file system"
           readOnly
           value={previewAsset?.name ?? ''}
+          error={getValidationErrorForField('assets')}
         />
         {tags && (
           <Dropdown
@@ -174,6 +210,7 @@ const CreateSeed = () => {
         </Form.Field>
       </Form>
       {validated === false && <p>Please check the form as not all required fields are present </p>}
+      {JSON.stringify(validationErrors)}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { plainToClass } from 'class-transformer';
-import { validate, ValidationError } from 'class-validator';
+import { validateSync, ValidationError } from 'class-validator';
 import React from 'react';
 import {
   Button,
@@ -20,24 +20,27 @@ import styles from '../../styles/pages/CreateSeed.module.scss';
 import { capitalize } from '../../utils';
 
 const CreateSeed = () => {
-  const { data: tags } = useSWR<ISeedTag[]>('/api/seeds/tags');
-  const [validated, setValidated] = React.useState(undefined);
+  const { data: tags } = useSWR<ISeedTag[]>('/api/seeds/tags', { refreshInterval: 0 });
   const [formData, setFormData] = React.useState<Partial<ISeed>>({});
   const [previewAsset, setPreviewAsset] = React.useState(undefined);
   const [seedTags, setSeedTags] = React.useState<[]>(undefined);
   const [validationErrors, setValidationErrors] = React.useState<ValidationError[]>(undefined);
 
-  const validateForm = async () => {
+  const hasValidSeed = () => {
+    const { seed, description, title } = formData || {};
+    return seed && description && title && previewAsset && validationErrors?.length === 0;
+  };
+
+  const validateForm = () => {
     const { seed, title, description } = formData;
+
     const parsed = plainToClass<Partial<Seed>, Partial<ISeed>>(Seed, {
       seed: seed ?? undefined,
       title: title ?? undefined,
       description: description ?? undefined,
-      assets: previewAsset ? [previewAsset] : undefined,
     });
 
-    setValidationErrors(await validate(parsed, { skipUndefinedProperties: true }));
-    console.log(validationErrors);
+    setValidationErrors(validateSync(parsed, { skipUndefinedProperties: true }));
   };
 
   const onFormChange = (_e: unknown, { name, value }) => {
@@ -46,11 +49,15 @@ const CreateSeed = () => {
   };
 
   const uploadAsset = async (file, type: SeedAssetType): Promise<ISeedAsset> => {
-    const { seed } = formData;
-
-    if (!seed) {
-      throw new Error('Seed is not defined');
+    if (!hasValidSeed()) {
+      return;
     }
+
+    if (!file) {
+      throw new Error('File is not defined');
+    }
+
+    const { seed } = formData;
 
     const id = uuid();
     const { type: fileType } = file;
@@ -94,12 +101,18 @@ const CreateSeed = () => {
   };
 
   const onSubmit = async () => {
-    if (!formData?.seed || !formData?.description) {
-      setValidated(false);
+    if (!hasValidSeed()) {
+      const data = formData;
+
+      setFormData({
+        seed: data.seed ?? '',
+        title: data.title ?? '',
+        description: data.description ?? '',
+      });
+
+      validateForm();
       return;
     }
-
-    setValidated(true);
 
     // Upload assets
     const assets = await uploadAssets();
@@ -122,17 +135,18 @@ const CreateSeed = () => {
       body: JSON.stringify(seed),
     });
 
-    const data = await response.json();
-    console.log(data);
-    if (data?.data && !data?.error) {
+    const json = await response.json();
+    console.log(json);
+
+    if (json?.data && !json?.error) {
       alert('Uploaded Seed');
       setFormData({});
       setPreviewAsset(undefined);
-      setValidated(undefined);
+      setValidationErrors(undefined);
       setSeedTags(undefined);
       return;
     }
-    alert(data);
+    alert(json);
   };
 
   const tagOptions = (): DropdownItemProps[] =>
@@ -152,10 +166,12 @@ const CreateSeed = () => {
           control={Input}
           className={styles.input}
           required
+          value={formData?.seed}
           name="seed"
           label={'Seed'}
           placeholder="Seed"
           onChange={onFormChange}
+          onFocus={validateForm}
           error={getValidationErrorForField('seed')}
         />
         <Form.Field
@@ -166,6 +182,7 @@ const CreateSeed = () => {
           label={'Title'}
           placeholder="Short title that explains the seed"
           onChange={onFormChange}
+          onFocus={validateForm}
           error={getValidationErrorForField('title')}
         />
         <Form.Field
@@ -176,6 +193,7 @@ const CreateSeed = () => {
           label={'Description'}
           placeholder="Explain the seed in detail"
           onChange={onFormChange}
+          onFocus={validateForm}
           error={getValidationErrorForField('description')}
         />
         <Form.Field>
@@ -195,21 +213,20 @@ const CreateSeed = () => {
           value={previewAsset?.name ?? ''}
           error={getValidationErrorForField('assets')}
         />
-        {tags && (
+        <Form.Field>
           <Dropdown
             placeholder="Tags"
             onChange={tagsChanged}
             fluid
             multiple
             selection
-            options={tagOptions()}
+            options={tags ? tagOptions() : []}
           />
-        )}
-        <Form.Field control={Button} type="submit">
+        </Form.Field>
+        <Form.Field disabled={!hasValidSeed()} control={Button} type="submit">
           Submit
         </Form.Field>
       </Form>
-      {validated === false && <p>Please check the form as not all required fields are present </p>}
       {JSON.stringify(validationErrors)}
     </div>
   );

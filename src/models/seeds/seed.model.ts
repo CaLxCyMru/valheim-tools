@@ -1,8 +1,8 @@
 import {
   IsAlphanumeric,
   IsArray,
-  IsDefined,
   IsNotEmpty,
+  IsNotEmptyObject,
   IsOptional,
   IsString,
   IsUUID,
@@ -81,7 +81,7 @@ export class Seed extends Dates implements ISeed {
   @OneToMany('SeedStatistic', 'seed', { eager: false })
   public readonly statistics?: SeedStatistic[];
 
-  @IsDefined()
+  @IsNotEmptyObject()
   @IsArray()
   @ValidateNested({ each: true })
   @OneToMany('SeedAsset', 'seed', { eager: true, cascade: ['insert', 'remove', 'update'] })

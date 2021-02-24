@@ -1,4 +1,14 @@
 .seed {
+  width: calc(25% - 1.5em) !important;
+  padding: 0 !important;
+  margin: 0.5em !important;
+
+  .preview {
+    img {
+      position: relative;
+    }
+  }
+
   .title {
     margin-top: 5px !important;
     font-size: 14px !important;

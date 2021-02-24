@@ -2,12 +2,12 @@ import { DateTime, ToRelativeCalendarOptions } from 'luxon';
 import { useSession } from 'next-auth/client';
 import React from 'react';
 import useClipboard from 'react-use-clipboard';
-import { Button, Card, Icon, Image, Label, Popup } from 'semantic-ui-react';
-import { SeedAssetType, Role } from '../../enums';
+import { Button, Card, Grid, Icon, Image, Label, Popup } from 'semantic-ui-react';
+import { Role, SeedAssetType } from '../../enums';
 import { AuthUser } from '../../models';
 import { ISeed } from '../../models/seeds/seed.model';
-import { SessionUser } from '../../types';
 import styles from '../../styles/components/seeds/Seed.module.scss';
+import { SessionUser } from '../../types';
 
 const Seed = ({
   seed,
@@ -66,8 +66,9 @@ const Seed = ({
   const icon = <Icon className="link" name="trash" />;
 
   return (
-    <Card className={styles.seed}>
+    <Card as={Grid.Column} className={styles.seed}>
       <Image
+        className={styles.preview}
         label={
           (user?.id === (createdBy as AuthUser).id || user?.role === Role.ADMIN) && {
             as: 'a',

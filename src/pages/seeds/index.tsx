@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/client';
 import Link from 'next/link';
 import React from 'react';
-import { Button, Card, Divider, Loader, Statistic } from 'semantic-ui-react';
+import { Button, Card, Divider, Grid, Loader, Statistic } from 'semantic-ui-react';
 import useSWR from 'swr';
 import { withLayout } from '../../components';
 import { Seed } from '../../components/seeds';
@@ -36,7 +36,7 @@ const Seeds = () => {
         )}
       </Statistic.Group>
 
-      <Card.Group className={styles.seeds}>
+      <Card.Group as={Grid} columns={4} className={styles.seeds}>
         {data.map((seed) => (
           <Seed key={seed.id} {...seed} />
         ))}

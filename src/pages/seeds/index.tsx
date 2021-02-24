@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/client';
 import Link from 'next/link';
 import React from 'react';
-import { Button, Card, Divider, Grid, Loader, Statistic } from 'semantic-ui-react';
+import { Button, Card, Divider, Grid, Statistic } from 'semantic-ui-react';
 import useSWR from 'swr';
 import { withLayout } from '../../components';
 import { Seed } from '../../components/seeds';
@@ -12,9 +12,8 @@ const Seeds = () => {
   const [session] = useSession();
   const { data } = useSWR<ISeed[]>('/api/seeds');
 
-  if (!data) {
-    return <Loader active />;
-  }
+  const getLoadingCards = (cards = 10) =>
+    Array.from({ length: cards }).map(() => ({ loading: true }));
 
   return (
     <>
@@ -26,7 +25,7 @@ const Seeds = () => {
       <Divider />
       <Statistic.Group>
         <Statistic>
-          <Statistic.Value>{data.length}</Statistic.Value>
+          <Statistic.Value>{data?.length}</Statistic.Value>
           <Statistic.Label>Seeds submitted</Statistic.Label>
         </Statistic>
         {session && (
@@ -37,9 +36,17 @@ const Seeds = () => {
       </Statistic.Group>
 
       <Card.Group as={Grid} columns={4} className={styles.seeds}>
-        {data.map((seed) => (
-          <Seed key={seed.id} {...seed} />
-        ))}
+        {data ? (
+          <>
+            {data.map((seed) => (
+              <Seed key={seed?.id} {...seed} />
+            ))}
+          </>
+        ) : (
+          getLoadingCards(10).map((loading, index) => (
+            <Seed key={`seedLoader-${index}`} {...loading} />
+          ))
+        )}
       </Card.Group>
     </>
   );

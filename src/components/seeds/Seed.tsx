@@ -2,7 +2,7 @@ import { DateTime, ToRelativeCalendarOptions } from 'luxon';
 import { useSession } from 'next-auth/client';
 import React from 'react';
 import useClipboard from 'react-use-clipboard';
-import { Button, Card, Grid, Icon, Image, Label, Popup } from 'semantic-ui-react';
+import { Button, Card, Grid, Icon, Image, Label, Placeholder, Popup } from 'semantic-ui-react';
 import { Role, SeedAssetType } from '../../enums';
 import { AuthUser } from '../../models';
 import { ISeed } from '../../models/seeds/seed.model';
@@ -18,7 +18,8 @@ const Seed = ({
   overview,
   created,
   createdBy,
-}: ISeed): JSX.Element => {
+  loading,
+}: Partial<ISeed> & { loading?: boolean }): JSX.Element => {
   const [session] = useSession();
 
   const user = session?.user as SessionUser;
@@ -35,6 +36,11 @@ const Seed = ({
   const getPostedDuration = () => {
     const createdDate: DateTime =
       typeof created === 'string' ? DateTime.fromISO(created) : undefined;
+
+    if (!createdDate) {
+      return undefined;
+    }
+
     const base = DateTime.now();
     const diff = base.diff(createdDate);
 
@@ -67,43 +73,84 @@ const Seed = ({
 
   return (
     <Card as={Grid.Column} className={styles.seed}>
-      <Image
-        className={styles.preview}
-        label={
-          (user?.id === (createdBy as AuthUser).id || user?.role === Role.ADMIN) && {
-            as: 'a',
-            color: 'red',
-            corner: 'right',
-            icon,
-            onClick: deleteSeed,
-            size: 'large',
+      {loading ? (
+        <Placeholder>
+          <Placeholder.Image square />
+        </Placeholder>
+      ) : (
+        <Image
+          className={styles.preview}
+          label={
+            (user?.id === (createdBy as AuthUser)?.id || user?.role === Role.ADMIN) && {
+              as: 'a',
+              color: 'red',
+              corner: 'right',
+              icon,
+              onClick: deleteSeed,
+              size: 'large',
+            }
           }
-        }
-        src={`${process.env.NEXT_PUBLIC_SEED_ASSET_BASE_URL}/${preview}`}
-      />
+          src={`${process.env.NEXT_PUBLIC_SEED_ASSET_BASE_URL}/${preview}`}
+        />
+      )}
       <Card.Content>
-        <Card.Header>{seed}</Card.Header>
-        {title && <Card.Header className={styles.title}>{title}</Card.Header>}
-        <Card.Description className={styles.description}>{description}</Card.Description>
+        {loading ? (
+          <Placeholder>
+            <Placeholder.Header>
+              <Placeholder.Line length="long" />
+              <Placeholder.Line length="short" />
+            </Placeholder.Header>
+            <Placeholder.Paragraph>
+              <Placeholder.Line length="full" />
+            </Placeholder.Paragraph>
+          </Placeholder>
+        ) : (
+          <>
+            <Card.Header>{seed}</Card.Header>
+            {title && <Card.Header className={styles.title}>{title}</Card.Header>}
+            <Card.Description className={styles.description}>{description}</Card.Description>
+          </>
+        )}
       </Card.Content>
       <Card.Content extra>
-        <Card.Meta style={{ marginBottom: '5px' }}>
-          Posted {getPostedDuration()} by {(createdBy as AuthUser).name}
+        <Card.Meta
+          style={loading ? { marginBottom: '10px', marginTop: '0' } : { marginBottom: '5px' }}
+        >
+          {loading ? (
+            <Placeholder>
+              <Placeholder.Line length="short" />
+            </Placeholder>
+          ) : (
+            <>
+              Posted {getPostedDuration()} by {(createdBy as AuthUser)?.name}
+            </>
+          )}
         </Card.Meta>
-        <Button as="div" labelPosition="right" onClick={() => alert('Like Button clicked')}>
-          <Button icon>
+        <Button
+          disabled={loading}
+          as="div"
+          labelPosition="right"
+          onClick={() => alert('Like Button clicked')}
+        >
+          <Button disabled={loading} icon>
             <Icon name="heart" /> Like
           </Button>
           <Label basic pointing="left">
-            {overview?.likes ?? '0'}
+            {loading ? '' : overview?.likes ?? '0'}
           </Label>
         </Button>
         <Popup
           content="Seed Copied"
           open={isSeedCopied}
           trigger={
-            <Button as="div" labelPosition="right" onClick={setSeedCopied} floated="right">
-              <Button>Copy</Button>
+            <Button
+              disabled={loading}
+              as="div"
+              labelPosition="right"
+              onClick={setSeedCopied}
+              floated="right"
+            >
+              <Button disabled={loading}>Copy</Button>
               <Label as="a">
                 <Icon name="clipboard" />
               </Label>
@@ -112,13 +159,17 @@ const Seed = ({
         />
       </Card.Content>
       <Card.Content>
-        {tags && (
-          <Label.Group circular>
-            {tags.map(({ id, tag }) => (
-              <Label key={id}>{`#${tag}`}</Label>
-            ))}
-          </Label.Group>
-        )}
+        <Label.Group circular>
+          {loading ? (
+            <Placeholder>
+              <Placeholder.Paragraph>
+                <Placeholder.Line length="short" />
+              </Placeholder.Paragraph>
+            </Placeholder>
+          ) : (
+            <> {tags && tags.map(({ id, tag }) => <Label key={id}>{`#${tag}`}</Label>)}</>
+          )}
+        </Label.Group>
       </Card.Content>
     </Card>
   );

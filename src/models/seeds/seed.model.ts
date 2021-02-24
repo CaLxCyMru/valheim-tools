@@ -81,8 +81,8 @@ export class Seed extends Dates implements ISeed {
   @OneToMany('SeedStatistic', 'seed', { eager: false })
   public readonly statistics?: SeedStatistic[];
 
-  @IsNotEmptyObject()
   @IsArray()
+  @IsNotEmpty({ each: true })
   @ValidateNested({ each: true })
   @OneToMany('SeedAsset', 'seed', { eager: true, cascade: ['insert', 'remove', 'update'] })
   public readonly assets: SeedAsset[];

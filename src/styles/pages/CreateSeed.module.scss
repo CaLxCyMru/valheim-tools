@@ -1,2 +1,7 @@
 .createSeed {
+  .submit {
+    &.disabled {
+      background: #333333;
+    }
+  }
 }

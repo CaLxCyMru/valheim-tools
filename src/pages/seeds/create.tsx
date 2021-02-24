@@ -11,6 +11,7 @@ import {
   TextArea,
 } from 'semantic-ui-react';
 import useSWR from 'swr';
+import { PartialDeep } from 'type-fest';
 import fetch from 'unfetch';
 import { v4 as uuid } from 'uuid';
 import { withAuth, withLayout } from '../../components';
@@ -21,9 +22,9 @@ import { capitalize } from '../../utils';
 
 const CreateSeed = () => {
   const { data: tags } = useSWR<ISeedTag[]>('/api/seeds/tags', { refreshInterval: 0 });
-  const [formData, setFormData] = React.useState<Partial<ISeed>>({});
+  const [formData, setFormData] = React.useState<PartialDeep<ISeed>>({});
   const [previewAsset, setPreviewAsset] = React.useState(undefined);
-  const [seedTags, setSeedTags] = React.useState<[]>(undefined);
+  const [seedTags, setSeedTags] = React.useState<Partial<ISeedTag[]>>(undefined);
   const [validationErrors, setValidationErrors] = React.useState<ValidationError[]>(undefined);
 
   const hasValidSeed = () => {
@@ -34,7 +35,7 @@ const CreateSeed = () => {
   const validateForm = () => {
     const { seed, title, description } = formData;
 
-    const parsed = plainToClass<Partial<Seed>, Partial<ISeed>>(Seed, {
+    const parsed = plainToClass<PartialDeep<Seed>, PartialDeep<ISeed>>(Seed, {
       seed: seed ?? undefined,
       title: title ?? undefined,
       description: description ?? undefined,
@@ -100,6 +101,13 @@ const CreateSeed = () => {
     return [preview];
   };
 
+  const resetForm = () => {
+    setFormData({});
+    setPreviewAsset(undefined);
+    setValidationErrors(undefined);
+    setSeedTags(undefined);
+  };
+
   const onSubmit = async () => {
     if (!hasValidSeed()) {
       const data = formData;
@@ -119,10 +127,10 @@ const CreateSeed = () => {
 
     console.log(assets);
 
-    const seed: Partial<ISeed> = {
+    const seed: PartialDeep<ISeed> = {
       ...formData,
       assets,
-      tags: seedTags,
+      tags: seedTags.map(({ id }) => ({ id })),
     };
 
     // Now let's create our seed
@@ -140,13 +148,10 @@ const CreateSeed = () => {
 
     if (json?.data && !json?.error) {
       alert('Uploaded Seed');
-      setFormData({});
-      setPreviewAsset(undefined);
-      setValidationErrors(undefined);
-      setSeedTags(undefined);
+      resetForm();
       return;
     }
-    alert(json);
+    alert(JSON.stringify(json));
   };
 
   const tagOptions = (): DropdownItemProps[] =>
@@ -157,16 +162,16 @@ const CreateSeed = () => {
     setPreviewAsset(e.target.files[0]);
   };
 
-  const tagsChanged = (e, { value }) => setSeedTags(value.map((id: string) => ({ id })));
+  const tagsChanged = (e, { value }) => setSeedTags(value.map((id: string) => ({ id, value })));
 
   return (
     <div className={styles.createSeed}>
       <Form className={styles.form} onSubmit={onSubmit}>
         <Form.Field
           control={Input}
+          value={formData?.seed ?? ''}
           className={styles.input}
           required
-          value={formData?.seed}
           name="seed"
           label={'Seed'}
           placeholder="Seed"
@@ -176,6 +181,7 @@ const CreateSeed = () => {
         />
         <Form.Field
           control={Input}
+          value={formData?.title ?? ''}
           className={styles.input}
           required
           name="title"
@@ -187,6 +193,7 @@ const CreateSeed = () => {
         />
         <Form.Field
           control={TextArea}
+          value={formData?.description ?? ''}
           className={styles.input}
           required
           name="description"
@@ -217,13 +224,19 @@ const CreateSeed = () => {
           <Dropdown
             placeholder="Tags"
             onChange={tagsChanged}
+            value={seedTags?.map(({ tag }) => tag) ?? []}
             fluid
             multiple
             selection
             options={tags ? tagOptions() : []}
           />
         </Form.Field>
-        <Form.Field disabled={!hasValidSeed()} control={Button} type="submit">
+        <Form.Field
+          className={styles.submit}
+          disabled={!hasValidSeed()}
+          control={Button}
+          type="submit"
+        >
           Submit
         </Form.Field>
       </Form>

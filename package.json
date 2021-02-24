@@ -1,12 +1,17 @@
 {
   "name": "valheim-tools",
+  "author": "Callum Morris",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint '*/**/*.{ts,tsx}' --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "now-build": "npm run semantic:build && next build",
+    "semantic:build": "cd .semantic && gulp build-css build-assets",
+    "semantic:watch": "cd .semantic && npm run semantic:build && gulp watch"
   },
   "husky": {
     "hooks": {
@@ -25,6 +30,7 @@
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "delay": "^5.0.0",
+    "fomantic-ui": "^2.8.7",
     "luxon": "^1.26.0",
     "mime-types": "^2.1.29",
     "mysql": "^2.18.1",
@@ -35,7 +41,6 @@
     "react-use-clipboard": "^1.0.7",
     "reflect-metadata": "^0.1.13",
     "sass": "^1.32.7",
-    "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.3",
     "swr": "^0.4.2",
     "typeorm": "^0.2.31",
@@ -70,6 +75,7 @@
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
     "type-fest": "^0.21.2",
-    "typescript": "^4.1.5"
+    "typescript": "^4.1.5",
+    "url-loader": "^4.1.1"
   }
 }

@@ -2,7 +2,7 @@ import { Provider, providers } from 'next-auth/client';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import React from 'react';
-import 'semantic-ui-css/semantic.min.css';
+import '../../.semantic/dist/semantic.min.css';
 import '../styles/global.scss';
 import App from 'next/app';
 import { SWRConfig } from 'swr';

@@ -35,7 +35,7 @@ const Seeds = () => {
         )}
       </Statistic.Group>
 
-      <Card.Group as={Grid} columns={4} className={styles.seeds}>
+      <Card.Group as={Grid} columns={4} doubling stackable className={styles.seeds}>
         {data ? (
           <>
             {data.map((seed) => (

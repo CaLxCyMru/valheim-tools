@@ -85,6 +85,8 @@ const Seed = ({
 
   const icon = <Icon className="link" name="trash" />;
 
+  // TODO: Refactor this so that each `loading` condition is a sub-component
+
   return (
     <Card as={Grid.Column} className={styles.seed} href={loading ? undefined : details}>
       {loading ? (
@@ -120,7 +122,7 @@ const Seed = ({
           </Placeholder>
         ) : (
           <>
-            <Card.Header>
+            <Card.Header className={styles.header}>
               <Link href={details}>{seed}</Link>
             </Card.Header>
             {title && <Card.Header className={styles.title}>{title}</Card.Header>}

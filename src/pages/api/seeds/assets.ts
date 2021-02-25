@@ -2,7 +2,7 @@ import { GetSignedUrlConfig, Storage } from '@google-cloud/storage';
 import mime from 'mime-types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { error } from '../../../utils';
-import { getRepo } from '../lib/seeds-db';
+import { getRepo } from '../lib';
 import { checkExists } from './index';
 
 let storage: Storage = undefined;

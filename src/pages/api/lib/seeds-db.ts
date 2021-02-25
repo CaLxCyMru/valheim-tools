@@ -6,14 +6,17 @@ import {
   ConnectionOptions,
   createConnection as typeOrmCreateConnection,
   EntityTarget,
+  getConnectionManager,
   Repository,
 } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 import { AuthUser, Seed, SeedAsset, SeedStatistic } from '../../../models';
 import { SeedOverview } from '../../../models/seeds/seed-overview.model';
 import { SeedTag } from '../../../models/seeds/seed-tag.models';
 
 let databaseConnection: Connection;
+
+const DB_CONNECTION_NAME = 'seeds';
+const DB_CONNECT_DELAY_MS = Number(process.env.SEEDS_DB_CONNECT_DELAY_MS ?? 100);
 
 const config: ConnectionOptions = {
   type: 'mysql',
@@ -23,30 +26,83 @@ const config: ConnectionOptions = {
   password: String(process.env.SEEDS_DB_PASSWORD),
   database: String(process.env.SEEDS_DB_NAME),
   synchronize: Boolean(process.env.SEEDS_DB_SYNCHRONIZE ?? false),
+  cache: {
+    alwaysEnabled: Boolean(process.env.SEEDS_DB_CACHE_ALWAYS_ENABPLED ?? false),
+    duration: Number(process.env.SEEDS_DB_GLOBAL_CACHE_DURATION ?? 1000),
+  },
   // TODO: Load via file
   entities: [Seed, SeedAsset, SeedStatistic, SeedOverview, AuthUser, SeedTag],
-  name: uuid(),
+  name: DB_CONNECTION_NAME,
 };
 
 let isConnecting: boolean;
 
+const entitiesChanged = (prevEntities: any[], newEntities: any[]): boolean => {
+  if (prevEntities.length !== newEntities.length) return true;
+
+  for (let i = 0; i < prevEntities.length; i++) {
+    if (prevEntities[i] !== newEntities[i]) return true;
+  }
+
+  return false;
+};
+
+const updateConnectionEntities = async (connection: Connection, entities: any[]) => {
+  if (!entitiesChanged(connection.options.entities, entities)) return;
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  connection.options.entities = entities;
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  connection.buildMetadatas();
+
+  if (connection.options.synchronize) {
+    await connection.synchronize();
+  }
+};
+
 export const createConnection = async (): Promise<Connection> => {
-  if (databaseConnection && databaseConnection.isConnected) {
+  if (databaseConnection) {
+    if (!databaseConnection.isConnected) {
+      await databaseConnection.connect();
+    }
     console.log('Re-using existing connection', DateTime.now().toISO());
     return databaseConnection;
   }
 
   if (isConnecting) {
-    console.log('Already connecting to database, waiting 1000ms');
-    await delay(1000);
-    return await createConnection();
+    console.log(`Already connecting to database, waiting ${DB_CONNECT_DELAY_MS}ms`);
+    await delay(DB_CONNECT_DELAY_MS);
+    return createConnection();
   }
 
+  isConnecting = true;
+
   try {
-    isConnecting = true;
-    databaseConnection = await typeOrmCreateConnection(config);
+    const manager = getConnectionManager();
+
+    if (manager.has(DB_CONNECTION_NAME)) {
+      console.log(
+        `Found existing conenction for '${DB_CONNECTION_NAME}', in TypeORM Connection manager`,
+      );
+      databaseConnection = manager.get(DB_CONNECTION_NAME);
+
+      if (!databaseConnection.isConnected) {
+        await databaseConnection.connect();
+      }
+
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Updating existing connection with entities');
+        await updateConnectionEntities(databaseConnection, config.entities);
+      }
+    } else {
+      databaseConnection = await typeOrmCreateConnection(config);
+      console.log('Got connection', DateTime.now().toISO());
+    }
+
     isConnecting = false;
-    console.log('Got connection', DateTime.now().toISO());
   } catch (e) {
     isConnecting = false;
     console.error('Could not create a connection with the database, check settings!', e);

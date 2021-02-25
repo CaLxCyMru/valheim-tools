@@ -9,7 +9,7 @@ import { SeedOverview } from '../../../models/seeds/seed-overview.model';
 import { ISeed, Seed } from '../../../models/seeds/seed.model';
 import { Session } from '../../../types';
 import { error, success } from '../../../utils';
-import { getRepo } from '../lib/seeds-db';
+import { getRepo } from '../lib';
 
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
   const seedRepo = await getRepo(Seed);

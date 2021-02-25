@@ -6,7 +6,7 @@ import Providers from 'next-auth/providers';
 import { Role } from '../../../enums';
 import { AuthUser } from '../../../models/auth-user/auth-user.model';
 import { Session } from '../../../types';
-import { createConnection } from '../lib/seeds-db';
+import { createConnection, getRepo } from '../lib';
 
 const options: InitOptions = {
   // full list of providers can be found https://next-auth.js.org/configuration/providers
@@ -32,6 +32,7 @@ const options: InitOptions = {
     password: String(process.env.AUTH_DB_PASSWORD),
     database: String(process.env.AUTH_DB_NAME),
     synchronize: Boolean(process.env.AUTH_DB_SYNCHRONIZE ?? false),
+    name: 'auth',
   }),
   events: {
     signIn: async ({ user: { id, name } }) => {
@@ -65,8 +66,7 @@ const options: InitOptions = {
       session.user.id = id;
 
       try {
-        const connection = await createConnection();
-        const repo = connection.getRepository(AuthUser);
+        const repo = await getRepo(AuthUser);
         session.user.role = (await repo.findByIds([id]))[0].role;
       } catch (error) {
         session.user.role = Role.USER;

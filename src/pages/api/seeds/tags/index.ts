@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { SeedTag } from '../../../../models';
-import { getRepo } from '../../lib/seeds-db';
+import { getRepo } from '../../lib';
 
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
   const seedTagRepo = await getRepo<SeedTag>(SeedTag);

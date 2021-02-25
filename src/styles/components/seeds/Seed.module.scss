@@ -9,6 +9,15 @@
     }
   }
 
+  .header {
+    a {
+      color: #333;
+      &:hover {
+        color: #4183c4;
+      }
+    }
+  }
+
   .title {
     margin-top: 5px !important;
     font-size: 14px !important;

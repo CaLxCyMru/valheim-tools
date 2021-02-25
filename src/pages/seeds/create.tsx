@@ -224,7 +224,7 @@ const CreateSeed = () => {
           <Dropdown
             placeholder="Tags"
             onChange={tagsChanged}
-            value={seedTags?.map(({ tag }) => tag) ?? []}
+            value={seedTags?.map(({ id }) => id) ?? []}
             fluid
             multiple
             selection

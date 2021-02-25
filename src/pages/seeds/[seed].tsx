@@ -6,11 +6,11 @@ import styles from '../../styles/pages/SeedDetail.module.scss';
 
 const SeedDetail = () => {
   const router = useRouter();
-  const { seedId } = router.query;
+  const { seed } = router.query;
 
   return (
     <div className={styles.seedDetail}>
-      <Header>{seedId}</Header>
+      <Header>{seed}</Header>
     </div>
   );
 };

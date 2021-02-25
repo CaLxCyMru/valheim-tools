@@ -39,7 +39,7 @@ const Seeds = () => {
         {data ? (
           <>
             {data.map((seed) => (
-              <Seed key={seed?.id} {...seed} />
+              <Seed key={seed.id} {...seed} />
             ))}
           </>
         ) : (

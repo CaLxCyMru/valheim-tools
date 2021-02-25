@@ -1,6 +1,8 @@
 import { DateTime, ToRelativeCalendarOptions } from 'luxon';
 import { useSession } from 'next-auth/client';
-import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { SyntheticEvent } from 'react';
 import useClipboard from 'react-use-clipboard';
 import { Button, Card, Grid, Icon, Image, Label, Placeholder, Popup } from 'semantic-ui-react';
 import { Role, SeedAssetType } from '../../enums';
@@ -21,6 +23,8 @@ const Seed = ({
   loading,
 }: Partial<ISeed> & { loading?: boolean }): JSX.Element => {
   const [session] = useSession();
+
+  const details = `/seeds/${seed}`;
 
   const user = session?.user as SessionUser;
 
@@ -65,6 +69,16 @@ const Seed = ({
 
   const deleteSeed = () => setDeleted(true);
 
+  const copy = (e: SyntheticEvent) => {
+    e?.preventDefault();
+    setSeedCopied();
+  };
+
+  const like = (e: SyntheticEvent) => {
+    e?.preventDefault();
+    alert('Like clicked');
+  };
+
   if (deleted) {
     return <></>;
   }
@@ -72,7 +86,7 @@ const Seed = ({
   const icon = <Icon className="link" name="trash" />;
 
   return (
-    <Card as={Grid.Column} className={styles.seed}>
+    <Card as={Grid.Column} className={styles.seed} href={loading ? undefined : details}>
       {loading ? (
         <Placeholder>
           <Placeholder.Image square />
@@ -106,7 +120,9 @@ const Seed = ({
           </Placeholder>
         ) : (
           <>
-            <Card.Header>{seed}</Card.Header>
+            <Card.Header>
+              <Link href={details}>{seed}</Link>
+            </Card.Header>
             {title && <Card.Header className={styles.title}>{title}</Card.Header>}
             <Card.Description className={styles.description}>{description}</Card.Description>
           </>
@@ -126,12 +142,7 @@ const Seed = ({
             </>
           )}
         </Card.Meta>
-        <Button
-          disabled={loading}
-          as="div"
-          labelPosition="right"
-          onClick={() => alert('Like Button clicked')}
-        >
+        <Button disabled={loading} as="div" labelPosition="right" onClick={like}>
           <Button disabled={loading} icon>
             <Icon name="heart" /> Like
           </Button>
@@ -147,7 +158,7 @@ const Seed = ({
               disabled={loading}
               as="div"
               labelPosition="right"
-              onClick={setSeedCopied}
+              onClick={copy}
               floated="right"
             >
               <Button disabled={loading}>Copy</Button>

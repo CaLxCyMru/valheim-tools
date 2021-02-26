@@ -8,6 +8,7 @@ import {
   Form,
   Icon,
   Input,
+  Message,
   TextArea,
 } from 'semantic-ui-react';
 import useSWR from 'swr';
@@ -18,7 +19,7 @@ import { withAuth, withLayout } from '../../components';
 import { SeedAssetType } from '../../enums';
 import { ISeed, ISeedAsset, ISeedTag, Seed } from '../../models';
 import styles from '../../styles/pages/CreateSeed.module.scss';
-import { capitalize } from '../../utils';
+import { capitalize, parseApiError } from '../../utils';
 
 const CreateSeed = () => {
   const { data: tags } = useSWR<ISeedTag[]>('/api/seeds/tags', { refreshInterval: 0 });
@@ -26,6 +27,8 @@ const CreateSeed = () => {
   const [previewAsset, setPreviewAsset] = React.useState(undefined);
   const [seedTags, setSeedTags] = React.useState<Partial<ISeedTag[]>>(undefined);
   const [validationErrors, setValidationErrors] = React.useState<ValidationError[]>(undefined);
+  const [success, setSuccess] = React.useState(false);
+  const [error, setError] = React.useState<{ title: string; message: string }>(undefined);
 
   const hasValidSeed = () => {
     const { seed, description, title } = formData || {};
@@ -130,7 +133,7 @@ const CreateSeed = () => {
     const seed: PartialDeep<ISeed> = {
       ...formData,
       assets,
-      tags: seedTags.map(({ id }) => ({ id })),
+      tags: seedTags?.map(({ id }) => ({ id })),
     };
 
     // Now let's create our seed
@@ -143,15 +146,20 @@ const CreateSeed = () => {
       body: JSON.stringify(seed),
     });
 
-    const json = await response.json();
-    console.log(json);
+    const { data, error } = await response.json();
 
-    if (json?.data && !json?.error) {
-      alert('Uploaded Seed');
-      resetForm();
+    if (error || !data) {
+      const parsedError = parseApiError(error);
+      setSuccess(false);
+      setError(parsedError);
       return;
     }
-    alert(JSON.stringify(json));
+
+    if (data) {
+      setError(undefined);
+      setSuccess(true);
+      resetForm();
+    }
   };
 
   const tagOptions = (): DropdownItemProps[] =>
@@ -166,7 +174,7 @@ const CreateSeed = () => {
 
   return (
     <div className={styles.createSeed}>
-      <Form className={styles.form} onSubmit={onSubmit}>
+      <Form className={styles.form} onSubmit={onSubmit} error={error !== undefined}>
         <Form.Field
           control={Input}
           value={formData?.seed ?? ''}
@@ -231,6 +239,14 @@ const CreateSeed = () => {
             options={tags ? tagOptions() : []}
           />
         </Form.Field>
+        {(error || success) && (
+          <Message
+            error={error !== undefined}
+            color={error ? 'red' : 'blue'}
+            header={error ? error.title : 'Seed Uploaded'}
+            content={error ? error.message : 'Seed has been uploaded sucessfully'}
+          />
+        )}
         <Form.Field
           className={styles.submit}
           disabled={!hasValidSeed()}
@@ -240,7 +256,6 @@ const CreateSeed = () => {
           Submit
         </Form.Field>
       </Form>
-      {JSON.stringify(validationErrors)}
     </div>
   );
 };

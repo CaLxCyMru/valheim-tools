@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { ApiError } from '../../../enums';
 import { Seed } from '../../../models';
 import { error } from '../../../utils';
 import { getRepo } from '../lib';
@@ -9,7 +10,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
   } = req;
 
   if (!seed) {
-    error(res, 'Seed must be provided');
+    error(res, 'Missing Fields', ApiError.BAD_REQUEST, { missingFields: ['seed'] });
     return;
   }
 
@@ -17,7 +18,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
   const data = await seedRepo.findOne({ where: { seed }, cache: 60000 });
 
   if (!data) {
-    error(res, 'Seed does not exist');
+    error(res, 'Seed does not exist', ApiError.RESOURCE_NOT_FOUND);
     return;
   }
 

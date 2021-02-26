@@ -66,7 +66,7 @@ const options: InitOptions = {
       session.user.id = id;
 
       try {
-        const repo = await getRepo(AuthUser);
+        const repo = await getRepo<AuthUser>(AuthUser);
         session.user.role = (await repo.findByIds([id]))[0].role;
       } catch (error) {
         session.user.role = Role.USER;

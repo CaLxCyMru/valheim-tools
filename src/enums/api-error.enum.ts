@@ -1,0 +1,15 @@
+export enum ApiError {
+  // HTTP Errors
+  UNKNOWN = -1,
+  BAD_REQUEST = 400,
+  RESOURCE_NOT_FOUND = 404,
+  UNAUTHORIZED = 401,
+  FORBIDDEN = 403,
+
+  // Platform Errors (1001-1200)
+  VALIDATION_FAILED = 1001,
+  INVALID_CONTENT_TYPE = 1002,
+
+  // Seeds - range 1201 - 1300
+  SEED_ALREADY_EXISTS = 1201,
+}

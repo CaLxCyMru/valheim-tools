@@ -1,6 +1,7 @@
 import { GetSignedUrlConfig, Storage } from '@google-cloud/storage';
 import mime from 'mime-types';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { ApiError } from '../../../enums';
 import { error } from '../../../utils';
 import { getRepo } from '../lib';
 import { checkExists } from './index';
@@ -26,25 +27,29 @@ const getStorage = () => {
 const post = async (req: NextApiRequest, res: NextApiResponse) => {
   const { id, type, seed } = req.query as { [key: string]: string };
 
+  const missingFields = [];
+
   if (!id) {
-    error(res, 'Id not provided');
-    return;
+    missingFields.push('id');
   }
 
   if (!type) {
-    error(res, 'Type not provided');
+    missingFields.push('type');
+  }
+
+  if (!seed) {
+    missingFields.push(seed);
+  }
+
+  if (missingFields.length) {
+    error(res, 'Missing Fields', ApiError.BAD_REQUEST, { missingFields });
     return;
   }
 
   const contentType = mime.contentType(type);
 
   if (!contentType) {
-    error(res, 'Invalid content type');
-    return;
-  }
-
-  if (!seed) {
-    error(res, 'Seed not provided');
+    error(res, 'Invalid Content Type', ApiError.INVALID_CONTENT_TYPE, { type });
     return;
   }
 

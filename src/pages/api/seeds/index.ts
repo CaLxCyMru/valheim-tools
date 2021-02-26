@@ -4,6 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/client';
 import { In, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { ApiError } from '../../../enums';
 import { SeedAsset } from '../../../models';
 import { SeedOverview } from '../../../models/seeds/seed-overview.model';
 import { ISeed, Seed } from '../../../models/seeds/seed.model';
@@ -41,7 +42,11 @@ export const checkExists = async (
     return false;
   }
 
-  error(res, 'Seed already exists');
+  error(
+    res,
+    `Seed '${seed}' already exists. Please submit a unique seed.`,
+    ApiError.SEED_ALREADY_EXISTS,
+  );
   return true;
 };
 
@@ -49,7 +54,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = (await getSession({ req })) as Session;
 
   if (!session) {
-    error(res, 'Unauthorized', undefined, 403);
+    error(res, 'Unauthorized', ApiError.UNAUTHORIZED, undefined, 403);
     return;
   }
 
@@ -79,7 +84,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
   const validationErrors = await validate(parsed);
 
   if (validationErrors?.length > 0) {
-    error(res, 'Validation Errors', { validationErrors });
+    error(res, 'Validation Errors', ApiError.VALIDATION_FAILED, { validationErrors });
     return;
   }
 

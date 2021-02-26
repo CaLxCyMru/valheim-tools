@@ -70,7 +70,14 @@ const CreateSeed = () => {
       method: 'POST',
     });
 
-    const { url, path } = await res.json();
+    const { url, path, error } = await res.json();
+
+    if (error) {
+      const parsedError = parseApiError(error);
+      setSuccess(false);
+      setError(parsedError);
+      return;
+    }
 
     const uploadedAsset = await fetch(url, {
       method: 'PUT',

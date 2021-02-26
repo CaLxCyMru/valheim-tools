@@ -93,7 +93,7 @@ export const createConnection = async (): Promise<Connection> => {
         await databaseConnection.connect();
       }
 
-      if (process.env.NODE_ENV !== 'production') {
+      if (process.env.SEEDS_DISABLE_ENTITY_CONNECTION_POPULATION !== 'true') {
         console.log('Updating existing connection with entities');
         await updateConnectionEntities(databaseConnection, config.entities);
       }

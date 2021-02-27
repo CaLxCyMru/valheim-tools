@@ -47,9 +47,6 @@ const Seeds = () => {
     minBottomValue: 400,
   });
 
-  console.log(meta);
-  console.log(data);
-
   if (isVisible && !isLoadingMore && meta?.total > data?.length) {
     setSize(size + 1);
   }

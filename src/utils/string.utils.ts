@@ -12,7 +12,7 @@ export const parseApiError = (error: {
   code: ApiError;
 }): { title: string; message: string } => {
   if (!error) {
-    return parseApiError({} as any);
+    return parseApiError({} as never);
   }
 
   const { message, code } = error;
@@ -25,4 +25,9 @@ export const parseApiError = (error: {
     title,
     message: message ?? 'An unknown error occured. Please try again.',
   };
+};
+
+export const parseNumber = (input: string, radix = 10): number => {
+  const parsed = Number.parseInt(input, radix);
+  return !isNaN(parsed) ? parsed : undefined;
 };

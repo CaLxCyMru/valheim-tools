@@ -5,6 +5,7 @@ export enum ApiError {
   RESOURCE_NOT_FOUND = 404,
   UNAUTHORIZED = 401,
   FORBIDDEN = 403,
+  METHOD_NOT_ALLOWED = 405,
 
   // Platform Errors (1001-1200)
   VALIDATION_FAILED = 1001,

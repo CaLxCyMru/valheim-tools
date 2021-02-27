@@ -9,12 +9,53 @@ import { SeedAsset } from '../../../models';
 import { SeedOverview } from '../../../models/seeds/seed-overview.model';
 import { ISeed, Seed } from '../../../models/seeds/seed.model';
 import { Session } from '../../../types';
-import { error, success } from '../../../utils';
+import { error, parseNumber, success } from '../../../utils';
 import { getRepo } from '../lib';
+import { decode, encode } from 'base-64';
 
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
+  const {
+    query: { cursor, pageSize },
+  } = req;
+
+  let parsedCursor: { [key: string]: number };
+
+  if (cursor) {
+    try {
+      parsedCursor = JSON.parse(decode(cursor as string));
+    } catch (ex) {
+      parsedCursor = undefined;
+    }
+
+    if (!parsedCursor) {
+      error(res, 'Invalid Cursor', ApiError.BAD_REQUEST);
+      return;
+    }
+  } else {
+    console.log(pageSize);
+    parsedCursor = { page: 0, size: parseNumber(pageSize as string) ?? 1 };
+  }
+
+  const { page, size } = parsedCursor;
+
+  if (page < 0) {
+    error(res, 'Page cannot be less than 0', ApiError.BAD_REQUEST);
+    return;
+  }
+
+  if (size < 0) {
+    error(res, 'Page Size cannot be less than 0', ApiError.BAD_REQUEST);
+    return;
+  }
+
+  const skip = page * size;
+
   const seedRepo = await getRepo(Seed);
-  const data = await seedRepo.find({ cache: 60000 });
+  const [data, total] = await seedRepo.findAndCount({
+    skip,
+    take: size,
+    cache: 60000,
+  });
 
   if (data) {
     const overviewRepo = await getRepo<SeedOverview>(SeedOverview);
@@ -24,7 +65,12 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     });
   }
 
-  res.status(200).json(data);
+  const next = { page: total > skip + size ? page + 1 : null, size };
+
+  success(res, data, {
+    total,
+    next: encode(JSON.stringify(next)),
+  });
 };
 
 export const checkExists = async (
@@ -89,7 +135,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const result = await repo.save(parsed);
-  success(res, 'Seed added', { result });
+  success(res, result, { result });
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
@@ -101,7 +147,7 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
       await post(req, res);
       break;
     default:
-      res.status(405).end(); // Method Not Allowed
+      error(res, 'Method not allowed', ApiError.METHOD_NOT_ALLOWED, undefined, 405);
       break;
   }
 };

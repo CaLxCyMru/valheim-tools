@@ -2,7 +2,7 @@ import { GetSignedUrlConfig, Storage } from '@google-cloud/storage';
 import mime from 'mime-types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ApiError } from '../../../enums';
-import { error } from '../../../utils';
+import { error, success } from '../../../utils';
 import { getRepo } from '../lib';
 import { checkExists } from './index';
 
@@ -72,7 +72,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
   };
 
   const [response] = await asset.getSignedUrl(options);
-  res.status(200).json({ path, contentType, url: response });
+  success(res, { path, contentType, url: response });
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
@@ -82,7 +82,7 @@ export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> 
       await post(req, res);
       break;
     default:
-      res.status(405).end(); // Method Not Allowed
+      error(res, 'Method not allowed', ApiError.METHOD_NOT_ALLOWED, undefined, 405);
       break;
   }
 };

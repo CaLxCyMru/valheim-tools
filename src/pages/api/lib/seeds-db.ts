@@ -37,7 +37,7 @@ const config: ConnectionOptions = {
 
 let isConnecting: boolean;
 
-const entitiesChanged = (prevEntities: any[], newEntities: any[]): boolean => {
+const entitiesChanged = (prevEntities: unknown[], newEntities: unknown[]): boolean => {
   if (prevEntities.length !== newEntities.length) return true;
 
   for (let i = 0; i < prevEntities.length; i++) {
@@ -47,7 +47,7 @@ const entitiesChanged = (prevEntities: any[], newEntities: any[]): boolean => {
   return false;
 };
 
-const updateConnectionEntities = async (connection: Connection, entities: any[]) => {
+const updateConnectionEntities = async (connection: Connection, entities: unknown[]) => {
   if (!entitiesChanged(connection.options.entities, entities)) return;
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -116,7 +116,7 @@ export const createConnection = async (): Promise<Connection> => {
   return databaseConnection;
 };
 
-export const getRepo = async <T extends any = Seed>(
+export const getRepo = async <T extends unknown = Seed>(
   type: EntityTarget<T> = Seed,
 ): Promise<Repository<T>> => {
   const connection = await createConnection();

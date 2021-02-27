@@ -6,9 +6,8 @@ export const response = (
   status: number,
   data: { [key: string]: unknown },
 ): void => {
-  res.status(status);
   res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(data));
+  res.status(status).json(data);
 };
 
 export const error = (
@@ -21,7 +20,7 @@ export const error = (
 
 export const success = (
   res: NextApiResponse,
-  message: string,
+  data: unknown,
   meta?: { [key: string]: unknown },
   status = 200,
-): void => response(res, status, { data: { message, ...(meta ? { meta } : undefined) } });
+): void => response(res, status, { data, ...(meta ? { meta } : undefined) });

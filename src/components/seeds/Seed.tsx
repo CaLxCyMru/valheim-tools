@@ -1,7 +1,6 @@
 import { DateTime, ToRelativeCalendarOptions } from 'luxon';
 import { useSession } from 'next-auth/client';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import React, { SyntheticEvent } from 'react';
 import useClipboard from 'react-use-clipboard';
 import { Button, Card, Grid, Icon, Image, Label, Placeholder, Popup } from 'semantic-ui-react';
@@ -67,7 +66,9 @@ const Seed = ({
     return createdDate.toRelativeCalendar(options);
   };
 
-  const deleteSeed = () => setDeleted(true);
+  const canDelete = user?.id === (createdBy as AuthUser)?.id || user?.role === Role.ADMIN;
+
+  const deleteSeed = () => canDelete && setDeleted(true);
 
   const copy = (e: SyntheticEvent) => {
     e?.preventDefault();
@@ -86,7 +87,6 @@ const Seed = ({
   const icon = <Icon className="link" name="trash" />;
 
   // TODO: Refactor this so that each `loading` condition is a sub-component
-
   return (
     <Card as={Grid.Column} className={styles.seed} href={loading ? undefined : details}>
       {loading ? (
@@ -95,10 +95,9 @@ const Seed = ({
         </Placeholder>
       ) : (
         <Image
-          className={styles.preview}
+          className={`${styles.preview}${canDelete ? styles.delete : undefined}`}
           label={
-            (user?.id === (createdBy as AuthUser)?.id || user?.role === Role.ADMIN) && {
-              as: 'a',
+            canDelete && {
               color: 'red',
               corner: 'right',
               icon,
@@ -122,9 +121,7 @@ const Seed = ({
           </Placeholder>
         ) : (
           <>
-            <Card.Header className={styles.header}>
-              <Link href={details}>{seed}</Link>
-            </Card.Header>
+            <Card.Header className={styles.header}>{seed}</Card.Header>
             {title && <Card.Header className={styles.title}>{title}</Card.Header>}
             <Card.Description className={styles.description}>{description}</Card.Description>
           </>
@@ -164,7 +161,7 @@ const Seed = ({
               floated="right"
             >
               <Button disabled={loading}>Copy</Button>
-              <Label as="a">
+              <Label>
                 <Icon name="clipboard" />
               </Label>
             </Button>

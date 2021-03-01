@@ -251,7 +251,7 @@ const CreateSeed = () => {
             error={error !== undefined}
             color={error ? 'red' : 'blue'}
             header={error ? error.title : 'Seed Uploaded'}
-            content={error ? error.message : 'Seed has been uploaded sucessfully'}
+            content={error ? error.message : 'Seed has been uploaded successfully'}
           />
         )}
         <Form.Field

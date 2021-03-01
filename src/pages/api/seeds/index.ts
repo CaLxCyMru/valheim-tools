@@ -32,7 +32,6 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
   } else {
-    console.log(pageSize);
     parsedCursor = { page: 0, size: parseNumber(pageSize as string) ?? 1 };
   }
 

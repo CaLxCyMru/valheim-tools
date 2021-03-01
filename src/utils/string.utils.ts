@@ -1,4 +1,5 @@
 import { ApiError } from '../enums';
+import { ApiErrorResponse } from '../types';
 
 export const capitalize = (input: string): string => {
   if (typeof input !== 'string') {
@@ -7,10 +8,7 @@ export const capitalize = (input: string): string => {
   return input.charAt(0).toUpperCase() + input.slice(1);
 };
 
-export const parseApiError = (error: {
-  message: string;
-  code: ApiError;
-}): { title: string; message: string } => {
+export const parseApiError = (error: ApiErrorResponse): { title: string; message: string } => {
   if (!error) {
     return parseApiError({} as never);
   }

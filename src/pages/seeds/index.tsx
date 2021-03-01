@@ -1,8 +1,9 @@
 import useVisibilitySensor from '@rooks/use-visibility-sensor';
+import delay from 'delay';
 import { useSession } from 'next-auth/client';
 import Link from 'next/link';
 import React from 'react';
-import { Button, Card, Divider, Grid, Loader, Statistic } from 'semantic-ui-react';
+import { Button, Card, Divider, Grid, Header, Loader, Statistic } from 'semantic-ui-react';
 import { useSWRInfinite } from 'swr';
 import { keyType } from 'swr/dist/types';
 import { withLayout } from '../../components';
@@ -13,6 +14,7 @@ import { ApiResponse } from '../../types';
 
 const API_URL = '/api/seeds';
 const PAGE_SIZE = 5;
+const RATE_LIMIT_MS = Number(process.env.NEXT_PUBLIC_RATE_LIMIT_MS ?? 1000);
 
 const getKey = (pageIndex: number, previousPageData: ApiResponse<ISeed[]>) => {
   if (previousPageData && !previousPageData.data) return null;
@@ -26,6 +28,7 @@ const getKey = (pageIndex: number, previousPageData: ApiResponse<ISeed[]>) => {
 
 const Seeds = () => {
   const [session] = useSession();
+  const [isRateLimited, setIsRateLimited] = React.useState(false);
   const { data: pages = [], size, setSize, error } = useSWRInfinite<ApiResponse<ISeed[]>>(
     getKey as () => keyType,
   );
@@ -44,11 +47,14 @@ const Seeds = () => {
     scrollCheck: true,
     resizeCheck: true,
     partialVisibility: 'bottom',
-    minBottomValue: 400,
   });
 
-  if (isVisible && !isLoadingMore && meta?.total > data?.length) {
+  if (!isRateLimited && isVisible && !isLoadingMore && meta?.total > data?.length) {
     setSize(size + 1);
+    setIsRateLimited(true);
+    delay(RATE_LIMIT_MS).then(() => {
+      setIsRateLimited(false);
+    });
   }
 
   const getLoadingCards = (cards = PAGE_SIZE) =>
@@ -56,7 +62,7 @@ const Seeds = () => {
 
   return (
     <div ref={root} className={styles.seeds}>
-      <h1>Seed</h1>
+      <Header size={'large'}>Seed</Header>
       <p>
         A seed is a random generated text which is used to procedurally generated generated Valheim
         world

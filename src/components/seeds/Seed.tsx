@@ -68,7 +68,15 @@ const Seed = ({
 
   const canDelete = user?.id === (createdBy as AuthUser)?.id || user?.role === Role.ADMIN;
 
-  const deleteSeed = () => canDelete && setDeleted(true);
+  const deleteSeed = (e: SyntheticEvent) => {
+    e?.preventDefault();
+    if (!canDelete) {
+      alert('No permission to delete this seed');
+      return;
+    }
+
+    setDeleted(true);
+  };
 
   const copy = (e: SyntheticEvent) => {
     e?.preventDefault();

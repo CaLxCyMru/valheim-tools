@@ -16,7 +16,7 @@ export const error = (
   code: ApiError,
   meta?: { [key: string]: unknown },
   status = 400,
-): void => response(res, status, { error: { message, code, ...(meta ? { meta } : undefined) } });
+): void => response(res, status, { error: { message, code }, ...(meta ? { meta } : undefined) });
 
 export const success = (
   res: NextApiResponse,

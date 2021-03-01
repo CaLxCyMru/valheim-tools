@@ -3,7 +3,7 @@ import delay from 'delay';
 import { useSession } from 'next-auth/client';
 import Link from 'next/link';
 import React from 'react';
-import { Button, Card, Divider, Grid, Header, Loader, Statistic } from 'semantic-ui-react';
+import { Button, Card, Divider, Grid, Header, Loader, Segment, Statistic } from 'semantic-ui-react';
 import { useSWRInfinite } from 'swr';
 import { keyType } from 'swr/dist/types';
 import { withLayout } from '../../components';
@@ -61,7 +61,7 @@ const Seeds = () => {
     Array.from({ length: cards }).map(() => ({ loading: true }));
 
   return (
-    <div ref={root} className={styles.seeds}>
+    <Segment inverted ref={root} className={styles.seeds}>
       <Header size={'large'}>Seed</Header>
       <p>
         A seed is a random generated text which is used to procedurally generated generated Valheim
@@ -87,14 +87,14 @@ const Seeds = () => {
         )}
       </Statistic.Group>
 
-      <Card.Group as={Grid} columns={4} doubling stackable className={styles.cards}>
+      <Card.Group inverted as={Grid} columns={4} doubling stackable className={styles.cards}>
         {data && data.map((seed) => <Seed key={seed.id} {...seed} />)}
         {isLoadingMore &&
           getLoadingCards().map((loading, index) => (
             <Seed key={`seedLoader-${index}`} {...loading} />
           ))}
       </Card.Group>
-    </div>
+    </Segment>
   );
 };
 

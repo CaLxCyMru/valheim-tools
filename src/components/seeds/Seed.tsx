@@ -98,7 +98,7 @@ const Seed = ({
   return (
     <Card as={Grid.Column} className={styles.seed} href={loading ? undefined : details}>
       {loading ? (
-        <Placeholder>
+        <Placeholder inverted>
           <Placeholder.Image square />
         </Placeholder>
       ) : (
@@ -118,7 +118,7 @@ const Seed = ({
       )}
       <Card.Content>
         {loading ? (
-          <Placeholder>
+          <Placeholder inverted>
             <Placeholder.Header>
               <Placeholder.Line length="long" />
               <Placeholder.Line length="short" />
@@ -140,7 +140,7 @@ const Seed = ({
           style={loading ? { marginBottom: '10px', marginTop: '0' } : { marginBottom: '5px' }}
         >
           {loading ? (
-            <Placeholder>
+            <Placeholder inverted>
               <Placeholder.Line length="short" />
             </Placeholder>
           ) : (
@@ -149,8 +149,8 @@ const Seed = ({
             </>
           )}
         </Card.Meta>
-        <Button disabled={loading} as="div" labelPosition="right" onClick={like}>
-          <Button disabled={loading} icon>
+        <Button inverted disabled={loading} as="div" labelPosition="right" onClick={like}>
+          <Button inverted disabled={loading} icon>
             <Icon name="heart" /> Like
           </Button>
           <Label basic pointing="left">
@@ -179,7 +179,7 @@ const Seed = ({
       <Card.Content>
         <Label.Group circular>
           {loading ? (
-            <Placeholder>
+            <Placeholder inverted>
               <Placeholder.Paragraph>
                 <Placeholder.Line length="short" />
               </Placeholder.Paragraph>

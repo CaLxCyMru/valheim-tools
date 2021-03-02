@@ -47,12 +47,14 @@ const SeedDetail = () => {
       return <Message error header={title} content={message} />;
     }
 
-    const { seed } = data;
+    const { seed, title, description } = data;
 
     return (
       <>
         <Card.Content>
           <Card.Header size="large" content={seed} />
+          {title && <Card.Header className={styles.title}>{title}</Card.Header>}
+          <Card.Description className={styles.description}>{description}</Card.Description>
         </Card.Content>
       </>
     );

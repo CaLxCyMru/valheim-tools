@@ -8,7 +8,8 @@ import { Role, SeedAssetType } from '../../enums';
 import { AuthUser } from '../../models';
 import { ISeed } from '../../models/seeds/seed.model';
 import styles from '../../styles/components/seeds/Seed.module.scss';
-import { SessionUser } from '../../types';
+import { Loadable, SessionUser } from '../../types';
+import SeedTitle from './SeedTitle';
 
 const Seed = ({
   seed,
@@ -20,7 +21,7 @@ const Seed = ({
   created,
   createdBy,
   loading,
-}: Partial<ISeed> & { loading?: boolean }): JSX.Element => {
+}: Partial<ISeed> & Loadable): JSX.Element => {
   const [session] = useSession();
 
   const details = `/seeds/${seed}`;
@@ -94,7 +95,6 @@ const Seed = ({
 
   const icon = <Icon className="link" name="trash" />;
 
-  // TODO: Refactor this so that each `loading` condition is a sub-component
   return (
     <Card as={Grid.Column} className={styles.seed} href={loading ? undefined : details}>
       {loading ? (
@@ -116,25 +116,7 @@ const Seed = ({
           src={`${process.env.NEXT_PUBLIC_SEED_ASSET_BASE_URL}/${preview}`}
         />
       )}
-      <Card.Content>
-        {loading ? (
-          <Placeholder>
-            <Placeholder.Header>
-              <Placeholder.Line length="long" />
-              <Placeholder.Line length="short" />
-            </Placeholder.Header>
-            <Placeholder.Paragraph>
-              <Placeholder.Line length="full" />
-            </Placeholder.Paragraph>
-          </Placeholder>
-        ) : (
-          <>
-            <Card.Header className={styles.header}>{seed}</Card.Header>
-            {title && <Card.Header className={styles.title}>{title}</Card.Header>}
-            <Card.Description className={styles.description}>{description}</Card.Description>
-          </>
-        )}
-      </Card.Content>
+      <SeedTitle seed={seed} title={title} description={description} loading={loading} />
       <Card.Content extra>
         <Card.Meta
           style={loading ? { marginBottom: '10px', marginTop: '0' } : { marginBottom: '5px' }}

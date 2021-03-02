@@ -29,7 +29,7 @@ import { ISeedTag, SeedTag } from './seed-tag.models';
 export interface ISeed extends IDates {
   id: string;
   seed: string;
-  title?: string;
+  title: string;
   description: string;
   tags?: ISeedTag[];
   statistics?: ISeedStatistic[];
@@ -54,7 +54,7 @@ export class Seed extends Dates implements ISeed {
   @Column({ unique: true })
   public readonly seed: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @MinLength(1)
   @MaxLength(64)

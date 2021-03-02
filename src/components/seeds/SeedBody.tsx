@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Placeholder } from 'semantic-ui-react';
 import { ISeed } from '../../models/seeds/seed.model';
-import styles from '../../styles/components/seeds/SeedTitle.module.scss';
+import styles from '../../styles/components/seeds/SeedBody.module.scss';
 import { Loadable } from '../../types';
 
 const SeedTitle = ({
@@ -36,7 +36,7 @@ const SeedTitle = ({
     );
   };
 
-  return <Card.Content className={styles.seedTitle}>{render()}</Card.Content>;
+  return <Card.Content className={styles.body}>{render()}</Card.Content>;
 };
 
 export default SeedTitle;

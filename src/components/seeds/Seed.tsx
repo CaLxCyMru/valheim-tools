@@ -1,15 +1,13 @@
 import { DateTime, ToRelativeCalendarOptions } from 'luxon';
-import { useSession } from 'next-auth/client';
-import Link from 'next/link';
 import React, { SyntheticEvent } from 'react';
 import useClipboard from 'react-use-clipboard';
-import { Button, Card, Grid, Icon, Image, Label, Placeholder, Popup } from 'semantic-ui-react';
-import { Role, SeedAssetType } from '../../enums';
+import { Button, Card, Grid, Icon, Label, Placeholder, Popup } from 'semantic-ui-react';
 import { AuthUser } from '../../models';
 import { ISeed } from '../../models/seeds/seed.model';
 import styles from '../../styles/components/seeds/Seed.module.scss';
-import { Loadable, SessionUser } from '../../types';
-import SeedTitle from './SeedTitle';
+import { Loadable } from '../../types';
+import SeedAssets from './SeedAssets';
+import SeedBody from './SeedBody';
 
 const Seed = ({
   seed,
@@ -22,20 +20,11 @@ const Seed = ({
   createdBy,
   loading,
 }: Partial<ISeed> & Loadable): JSX.Element => {
-  const [session] = useSession();
-
   const details = `/seeds/${seed}`;
-
-  const user = session?.user as SessionUser;
-
-  const preview = assets?.find(({ type }) => type === SeedAssetType.PREVIEW)?.path;
 
   const [isSeedCopied, setSeedCopied] = useClipboard(seed, {
     successDuration: 1000,
   });
-
-  // TODO: HACK for now as I don't want to actually delete them from the DB. Just use some react state magic ✨
-  const [deleted, setDeleted] = React.useState(false);
 
   const getPostedDuration = () => {
     const createdDate: DateTime =
@@ -67,18 +56,6 @@ const Seed = ({
     return createdDate.toRelativeCalendar(options);
   };
 
-  const canDelete = user?.id === (createdBy as AuthUser)?.id || user?.role === Role.ADMIN;
-
-  const deleteSeed = (e: SyntheticEvent) => {
-    e?.preventDefault();
-    if (!canDelete) {
-      alert('No permission to delete this seed');
-      return;
-    }
-
-    setDeleted(true);
-  };
-
   const copy = (e: SyntheticEvent) => {
     e?.preventDefault();
     setSeedCopied();
@@ -89,34 +66,10 @@ const Seed = ({
     alert('Like clicked');
   };
 
-  if (deleted) {
-    return <></>;
-  }
-
-  const icon = <Icon className="link" name="trash" />;
-
   return (
     <Card as={Grid.Column} className={styles.seed} href={loading ? undefined : details}>
-      {loading ? (
-        <Placeholder>
-          <Placeholder.Image square />
-        </Placeholder>
-      ) : (
-        <Image
-          className={`${styles.preview}${canDelete ? styles.delete : undefined}`}
-          label={
-            canDelete && {
-              color: 'red',
-              corner: 'right',
-              icon,
-              onClick: deleteSeed,
-              size: 'large',
-            }
-          }
-          src={`${process.env.NEXT_PUBLIC_SEED_ASSET_BASE_URL}/${preview}`}
-        />
-      )}
-      <SeedTitle seed={seed} title={title} description={description} loading={loading} />
+      <SeedAssets assets={assets} createdBy={createdBy} loading={loading} />
+      <SeedBody seed={seed} title={title} description={description} loading={loading} />
       <Card.Content extra>
         <Card.Meta
           style={loading ? { marginBottom: '10px', marginTop: '0' } : { marginBottom: '5px' }}

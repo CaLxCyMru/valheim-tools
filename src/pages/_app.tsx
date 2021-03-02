@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import React from 'react';
 import '../../.semantic/dist/semantic.min.css';
+import 'pure-react-carousel/dist/react-carousel.es.css';
 import '../styles/global.scss';
 import App from 'next/app';
 import { SWRConfig } from 'swr';

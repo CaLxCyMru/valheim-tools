@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { Card, Message, Placeholder } from 'semantic-ui-react';
 import useSWR from 'swr';
-import { withLayout } from '../../components';
+import { SeedAssets, SeedBody, withLayout } from '../../components';
 import { ISeed } from '../../models';
 import styles from '../../styles/pages/SeedDetail.module.scss';
 import { ApiResponse } from '../../types';
@@ -21,41 +21,20 @@ const SeedDetail = () => {
 
   const { data, error } = responseData ?? {};
 
-  const loading = () => {
-    return (
-      <Card.Content>
-        <Card.Header>
-          <Placeholder>
-            <Placeholder.Header>
-              <Placeholder.Line length="medium" />
-            </Placeholder.Header>
-          </Placeholder>
-        </Card.Header>
-      </Card.Content>
-    );
-  };
+  const loading = !data && !error;
 
   const component = () => {
-    // return loading();
-
-    if (!data && !error) {
-      return loading();
-    }
-
     if (error && !data) {
       const { title, message } = parseApiError(error);
       return <Message error header={title} content={message} />;
     }
 
-    const { seed, title, description } = data;
+    const { seed, title, description, assets, createdBy } = data ?? {};
 
     return (
       <>
-        <Card.Content>
-          <Card.Header size="large" content={seed} />
-          {title && <Card.Header className={styles.title}>{title}</Card.Header>}
-          <Card.Description className={styles.description}>{description}</Card.Description>
-        </Card.Content>
+        <SeedBody seed={seed} title={title} description={description} loading={loading} />
+        <SeedAssets assets={assets} createdBy={createdBy} loading={loading} />
       </>
     );
   };
@@ -63,8 +42,6 @@ const SeedDetail = () => {
   return (
     <Card fluid className={styles.seedDetail}>
       {component()}
-      {/* <Header size={'large'}>{seed}</Header>
-      <span>{JSON.stringify(responseData)}</span> */}
     </Card>
   );
 };

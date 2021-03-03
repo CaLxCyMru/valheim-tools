@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { Card, Message } from 'semantic-ui-react';
 import useSWR from 'swr';
-import { SeedAssets, SeedBody, withLayout } from '../../components';
+import { SeedAssets, SeedBody, SeedMeta, SeedTags, withLayout } from '../../components';
 import { ISeed } from '../../models';
 import styles from '../../styles/pages/SeedDetail.module.scss';
 import { ApiResponse } from '../../types';
@@ -29,12 +29,20 @@ const SeedDetail = () => {
       return <Message error header={title} content={message} />;
     }
 
-    const { seed, title, description, assets, createdBy } = data ?? {};
+    const { seed, title, description, assets, created, overview, tags, createdBy } = data ?? {};
 
     return (
       <>
-        <SeedBody seed={seed} title={title} description={description} loading={loading} />
         <SeedAssets assets={assets} createdBy={createdBy} loading={loading} />
+        <SeedBody seed={seed} title={title} description={description} loading={loading} />
+        <SeedMeta
+          seed={seed}
+          created={created}
+          createdBy={createdBy}
+          overview={overview}
+          loading={loading}
+        />
+        <SeedTags tags={tags} loading={loading} />
       </>
     );
   };

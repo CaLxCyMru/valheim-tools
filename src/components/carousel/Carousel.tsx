@@ -10,9 +10,20 @@ export interface CarouselProps {
   slides: (JSX.Element | ElementFunction)[];
   width?: number;
   height?: number;
+  interval?: number;
+  infinite?: boolean;
+  isIntrinsicHeight?: boolean;
 }
 
-const Carousel = ({ className, slides, width, height }: CarouselProps): JSX.Element => {
+const Carousel = ({
+  className,
+  slides,
+  width,
+  height,
+  interval,
+  infinite,
+  isIntrinsicHeight,
+}: CarouselProps): JSX.Element => {
   const count = slides.length;
 
   const renderSlide = (slide) => {
@@ -30,9 +41,12 @@ const Carousel = ({ className, slides, width, height }: CarouselProps): JSX.Elem
   return (
     <CarouselProvider
       className={`${styles.carousel} ${className ? className : ''}`}
-      naturalSlideWidth={width ?? 1}
-      naturalSlideHeight={height ?? 1.25}
+      naturalSlideWidth={width ?? undefined}
+      naturalSlideHeight={height ?? undefined}
       totalSlides={count}
+      interval={interval}
+      infinite={infinite}
+      isIntrinsicHeight={isIntrinsicHeight ?? true}
     >
       <Slider>
         {slides.map((slide, index) => (

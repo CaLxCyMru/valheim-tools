@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React from 'react';
-import { Card, Message, Placeholder } from 'semantic-ui-react';
+import { Card, Message } from 'semantic-ui-react';
 import useSWR from 'swr';
 import { SeedAssets, SeedBody, withLayout } from '../../components';
 import { ISeed } from '../../models';

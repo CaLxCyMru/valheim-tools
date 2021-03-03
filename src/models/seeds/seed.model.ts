@@ -2,7 +2,6 @@ import {
   IsAlphanumeric,
   IsArray,
   IsNotEmpty,
-  IsNotEmptyObject,
   IsOptional,
   IsString,
   IsUUID,

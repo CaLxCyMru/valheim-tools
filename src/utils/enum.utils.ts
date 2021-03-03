@@ -1,4 +1,4 @@
-export const getEnumKeyByEnumValue = <T = any>(
+export const getEnumKeyByEnumValue = <T = unknown>(
   myEnum: T,
   enumValue: number | string,
 ): string | undefined => {

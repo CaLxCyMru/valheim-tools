@@ -5,14 +5,18 @@ import DotGroup from './DotGroup';
 
 type ElementFunction = () => JSX.Element;
 
-export interface CarouselProps {
+export interface CarouselProps<T = JSX.Element | ElementFunction> {
   className?: string;
-  slides: (JSX.Element | ElementFunction)[];
+  slides: T[];
   width?: number;
   height?: number;
   interval?: number;
   infinite?: boolean;
   isIntrinsicHeight?: boolean;
+  hideDots?: boolean;
+  dragEnabled?: boolean;
+  touchEnabled?: boolean;
+  isPlaying?: boolean;
 }
 
 const Carousel = ({
@@ -23,6 +27,10 @@ const Carousel = ({
   interval,
   infinite,
   isIntrinsicHeight,
+  hideDots,
+  dragEnabled,
+  touchEnabled,
+  isPlaying,
 }: CarouselProps): JSX.Element => {
   const count = slides.length;
 
@@ -47,6 +55,9 @@ const Carousel = ({
       interval={interval}
       infinite={infinite}
       isIntrinsicHeight={isIntrinsicHeight ?? true}
+      dragEnabled={dragEnabled ?? false}
+      touchEnabled={touchEnabled}
+      isPlaying={isPlaying}
     >
       <Slider>
         {slides.map((slide, index) => (
@@ -55,7 +66,7 @@ const Carousel = ({
           </Slide>
         ))}
       </Slider>
-      {count > 1 && <DotGroup slides={count} />}
+      {count > 1 && !hideDots && <DotGroup slides={count} />}
     </CarouselProvider>
   );
 };

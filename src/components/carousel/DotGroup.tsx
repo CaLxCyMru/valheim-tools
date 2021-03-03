@@ -8,6 +8,7 @@ import {
   SemanticSIZES,
   SemanticTEXTALIGNMENTS,
 } from 'semantic-ui-react';
+import styles from '../../styles/components/carousel/DotGroup.module.scss';
 
 export type DotGroupProps = {
   slides: number;
@@ -20,10 +21,17 @@ const DotGroup = ({ slides, size, icon, align }: DotGroupProps): JSX.Element => 
   const onClick = (e: SyntheticEvent) => e?.preventDefault();
 
   return (
-    <Container textAlign={align ?? 'center'}>
+    <Container className={styles.dotGroup} textAlign={align ?? 'center'}>
       <Button.Group size={size ?? 'mini'} onClick={onClick}>
         {[...Array(slides).keys()].map((slide) => (
-          <Button as={Dot} key={slide} icon={icon ?? 'circle'} onClick={onClick} slide={slide} />
+          <Button
+            className={styles.dot}
+            as={Dot}
+            key={slide}
+            icon={icon ?? 'circle'}
+            onClick={onClick}
+            slide={slide}
+          />
         ))}
       </Button.Group>
     </Container>

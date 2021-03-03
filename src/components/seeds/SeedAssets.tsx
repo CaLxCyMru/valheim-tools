@@ -8,6 +8,9 @@ import styles from '../../styles/components/seeds/SeedAssets.module.scss';
 import { Loadable, SessionUser } from '../../types';
 import ImageCarousel from '../carousel/ImageCarousel';
 
+const SLIDE_INTERVAL = Number(process.env.NEXT_PUBLIC_SEEDS_SLIDE_INTERVAL ?? 5) * 1000;
+const BASE_ASSETS_URL = String(process.env.NEXT_PUBLIC_SEED_ASSET_BASE_URL);
+
 const SeedAssets = ({
   createdBy,
   assets,
@@ -51,7 +54,7 @@ const SeedAssets = ({
             size: 'large',
           }
         : undefined,
-      src: `${process.env.NEXT_PUBLIC_SEED_ASSET_BASE_URL}/${path}`,
+      src: `${BASE_ASSETS_URL}/${path}`,
     };
   };
 
@@ -65,6 +68,10 @@ const SeedAssets = ({
       <ImageCarousel
         className={styles.assets}
         slides={filtered.map(({ path }) => buildImage(path))}
+        infinite={true}
+        interval={SLIDE_INTERVAL}
+        isPlaying={true}
+        hideDots={true}
       />
     );
   };

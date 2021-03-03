@@ -1,22 +1,17 @@
 import React from 'react';
 import { CardContentProps } from 'semantic-ui-react';
 import CardSlide from './CardSlide';
-import Carousel from './Carousel';
+import Carousel, { CarouselProps } from './Carousel';
 
-export interface CardCarouselProps {
-  slides: CardContentProps[];
-  width?: number;
-  height?: number;
-}
+export type CardCarouselProps = CarouselProps<CardContentProps>;
 
-const CardCarousel = ({ slides, width, height }: CardCarouselProps): JSX.Element => {
+const CardCarousel = ({ slides, ...props }: CardCarouselProps): JSX.Element => {
   return (
     <Carousel
       slides={slides.map((slide, index) => (
         <CardSlide key={`card-slide-${index}`} index={index} {...slide} />
       ))}
-      width={width}
-      height={height}
+      {...props}
     />
   );
 };

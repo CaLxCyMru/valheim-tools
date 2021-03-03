@@ -15,7 +15,11 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const seedRepo = await getRepo<Seed>(Seed);
-  const data = await seedRepo.findOne({ where: { seed }, cache: 60000 });
+  const data = await seedRepo.findOne({
+    where: { seed },
+    order: { created: 'DESC' },
+    cache: 60000,
+  });
 
   if (!data) {
     error(res, 'Seed does not exist', ApiError.RESOURCE_NOT_FOUND);

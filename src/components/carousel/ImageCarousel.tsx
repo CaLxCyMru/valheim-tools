@@ -1,19 +1,12 @@
-import { Slide } from 'pure-react-carousel';
 import React from 'react';
 import { Image, ImageProps } from 'semantic-ui-react';
-import Carousel from './Carousel';
+import Carousel, { CarouselProps } from './Carousel';
 
-export interface ImageCarouselProps {
-  className?: string;
-  slides: (string | ImageProps)[];
-  width?: number;
-  height?: number;
-}
+export type ImageCarouselProps = CarouselProps<string | ImageProps>;
 
-const ImageCarousel = ({ className, slides, width, height }: ImageCarouselProps): JSX.Element => {
+const ImageCarousel = ({ slides, ...props }: ImageCarouselProps): JSX.Element => {
   return (
     <Carousel
-      className={className}
       slides={slides.map((slide, index) => {
         const key = `image-slide-${index}`;
         const image =
@@ -25,8 +18,7 @@ const ImageCarousel = ({ className, slides, width, height }: ImageCarouselProps)
 
         return image;
       })}
-      width={width}
-      height={height}
+      {...props}
     />
   );
 };

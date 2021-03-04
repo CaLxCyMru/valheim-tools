@@ -41,6 +41,7 @@
     "pure-react-carousel": "^1.27.6",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-dropzone": "^11.3.1",
     "react-use-clipboard": "^1.0.7",
     "reflect-metadata": "^0.1.13",
     "sass": "^1.32.7",

@@ -6,7 +6,6 @@ import {
   Dropdown,
   DropdownItemProps,
   Form,
-  Icon,
   Input,
   Message,
   TextArea,
@@ -15,14 +14,15 @@ import useSWR from 'swr';
 import { PartialDeep } from 'type-fest';
 import fetch from 'unfetch';
 import { v4 as uuid } from 'uuid';
-import { withAuth, withLayout } from '../../components';
+import { Dropzone, withAuth, withLayout } from '../../components';
 import { SeedAssetType } from '../../enums';
 import { ISeed, ISeedAsset, ISeedTag, Seed } from '../../models';
 import styles from '../../styles/pages/CreateSeed.module.scss';
+import { ApiResponse } from '../../types';
 import { capitalize, parseApiError } from '../../utils';
 
 const CreateSeed = () => {
-  const { data: tags } = useSWR<ISeedTag[]>('/api/seeds/tags', { refreshInterval: 0 });
+  const { data: tags } = useSWR<ApiResponse<ISeedTag[]>>('/api/seeds/tags', { refreshInterval: 0 });
   const [formData, setFormData] = React.useState<PartialDeep<ISeed>>({});
   const [previewAsset, setPreviewAsset] = React.useState(undefined);
   const [seedTags, setSeedTags] = React.useState<Partial<ISeedTag[]>>(undefined);
@@ -70,7 +70,7 @@ const CreateSeed = () => {
       method: 'POST',
     });
 
-    const { url, path, error } = await res.json();
+    const { data, errors } = await res.json();
 
     if (error) {
       const parsedError = parseApiError(error);
@@ -79,10 +79,13 @@ const CreateSeed = () => {
       return;
     }
 
+    const { url, path } = data;
+
     const uploadedAsset = await fetch(url, {
       method: 'PUT',
       body: file,
     });
+    console.log(uploadedAsset);
 
     if (uploadedAsset.ok) {
       console.log('Uploaded successfully!');
@@ -168,16 +171,16 @@ const CreateSeed = () => {
       resetForm();
     }
   };
-
   const tagOptions = (): DropdownItemProps[] =>
-    tags.map(({ id, tag }) => ({ key: id, text: tag, value: id }));
+    tags?.data?.map(({ id, tag }) => ({ key: id, text: tag, value: id }));
 
-  // TODO: Add type
-  const fileChange = (e) => {
-    setPreviewAsset(e.target.files[0]);
+  const onSetFiles = (files: File[]) => {
+    if (files?.length) {
+      setPreviewAsset(files[0]);
+    }
   };
 
-  const tagsChanged = (e, { value }) => setSeedTags(value.map((id: string) => ({ id, value })));
+  const tagsChanged = (_e, { value }) => setSeedTags(value.map((id: string) => ({ id, value })));
 
   return (
     <div className={styles.createSeed}>
@@ -219,22 +222,8 @@ const CreateSeed = () => {
           error={getValidationErrorForField('description')}
         />
         <Form.Field>
-          <Button as="label" htmlFor="file" type="button" animated="fade">
-            <Button.Content visible>
-              <Icon name="file" />
-            </Button.Content>
-            <Button.Content hidden>Choose a File</Button.Content>
-          </Button>
-          <input type="file" id="file" hidden onChange={fileChange} />
+          <Dropzone preview={true} setFiles={onSetFiles} />
         </Form.Field>
-        <Form.Input
-          fluid
-          label="File Chosen: "
-          placeholder="Use the above bar to browse your file system"
-          readOnly
-          value={previewAsset?.name ?? ''}
-          error={getValidationErrorForField('assets')}
-        />
         <Form.Field>
           <Dropdown
             placeholder="Tags"

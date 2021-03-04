@@ -1,0 +1,47 @@
+$segmentMargin: 7px !important;
+$dropzonePadding: 20px;
+$paddingTransition: 0.25s;
+.dropzone {
+  &:focus {
+    outline: none;
+  }
+
+  min-height: 50px;
+  border: 1px dashed rgba(34, 36, 38, 0.15);
+  border-radius: 2px;
+  cursor: pointer;
+
+  .dragActive {
+    .label {
+      padding-top: $dropzonePadding * 1.5 !important;
+      padding-bottom: $dropzonePadding * 1.5 !important;
+    }
+  }
+
+  .labelContainer {
+    height: auto;
+    padding: 0;
+    margin: $segmentMargin;
+
+    .label {
+      width: 100%;
+      padding-top: $dropzonePadding;
+      padding-bottom: $dropzonePadding;
+      transition: padding-top $paddingTransition ease, padding-bottom $paddingTransition ease;
+    }
+  }
+
+  .previews {
+    margin: $segmentMargin;
+    .preview {
+      display: inline-block;
+      padding: 0 5px;
+      .thumbnailContainer {
+        .thumbnail {
+          $thumbnailHeight: 128px;
+          height: $thumbnailHeight;
+        }
+      }
+    }
+  }
+}

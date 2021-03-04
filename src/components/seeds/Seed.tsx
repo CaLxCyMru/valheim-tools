@@ -1,6 +1,4 @@
-import { DateTime, ToRelativeCalendarOptions } from 'luxon';
-import React, { SyntheticEvent } from 'react';
-import useClipboard from 'react-use-clipboard';
+import React from 'react';
 import { Card, Grid } from 'semantic-ui-react';
 import { ISeed } from '../../models/seeds/seed.model';
 import styles from '../../styles/components/seeds/Seed.module.scss';

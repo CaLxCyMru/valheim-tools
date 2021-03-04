@@ -52,6 +52,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
   const seedRepo = await getRepo(Seed);
   const [data, total] = await seedRepo.findAndCount({
     skip,
+    order: { created: 'DESC' },
     take: size,
     cache: 60000,
   });

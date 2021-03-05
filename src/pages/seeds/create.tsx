@@ -70,7 +70,7 @@ const CreateSeed = () => {
       method: 'POST',
     });
 
-    const { data, errors } = await res.json();
+    const { data, error } = await res.json();
 
     if (error) {
       const parsedError = parseApiError(error);

@@ -21,7 +21,7 @@ export const parseApiError = (error: ApiErrorResponse): { title: string; message
 
   return {
     title,
-    message: message ?? 'An unknown error occured. Please try again.',
+    message: message ?? 'An unknown error occurred. Please try again.',
   };
 };
 

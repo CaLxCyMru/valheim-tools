@@ -13,7 +13,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const data = SeedService.instance.findBySeed(res, parseQueryString(seed));
+  const data = await SeedService.instance.findBySeed(res, parseQueryString(seed));
   success(res, data);
 };
 

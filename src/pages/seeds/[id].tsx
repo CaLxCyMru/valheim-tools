@@ -29,6 +29,7 @@ const SeedDetail = () => {
       return <Message error header={title} content={message} />;
     }
 
+    console.log(data);
     const { seed, title, description, assets, created, overview, tags, createdBy } = data ?? {};
 
     return (

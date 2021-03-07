@@ -17,7 +17,7 @@ const SeedMeta = ({
     return (
       <Card.Content extra>
         <SeedPostedBy created={created} createdBy={createdBy} loading={loading} />
-        <SeedLike overview={overview} loading={loading} />
+        <SeedLike seed={seed} overview={overview} loading={loading} />
         <SeedCopy seed={seed} loading={loading} />
       </Card.Content>
     );

@@ -1,5 +1,6 @@
+import { NextApiResponse } from 'next';
 import React from 'react';
-import { withLayout } from '../components';
+import { withAuth, withLayout, withRedirect } from '../components';
 import styles from '../styles/pages/Home.module.scss';
 
 const Home = () => (
@@ -10,5 +11,4 @@ const Home = () => (
     </main>
   </div>
 );
-
-export default withLayout(Home);
+export default withRedirect(withLayout(Home), '/seeds');

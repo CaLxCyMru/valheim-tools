@@ -15,10 +15,10 @@ export const withAuth = (Page: NextPage): ((props) => JSX.Element) => {
     if (!session) {
       const { res } = ctx;
       if (res) {
-        res.writeHead(307, { Location: '/' });
+        res.writeHead(307, { Location: '/seeds' });
         res.end();
       } else {
-        Router.replace('/');
+        Router.replace('/seeds');
       }
     }
 

@@ -16,11 +16,11 @@ const Header = ({ providers, router }: HeaderProps) => {
     <div className={styles.header}>
       <Menu className={styles.menu} attached="top" stackable inverted size="large">
         <Menu.Item header className={styles.logo}>
-          Valheim Tools
+          <Link href="/">Valheim Tools</Link>
         </Menu.Item>
-        <Menu.Item className="item" name="home" active={page === '/' || page === '/home'}>
+        {/* <Menu.Item className="item" name="home" active={page === '/' || page === '/home'}>
           <Link href="/">Home</Link>
-        </Menu.Item>
+        </Menu.Item> */}
         <Menu.Item name="seeds" active={page === '/seeds' || page === '/seeds/'}>
           <Link href="/seeds">Seeds</Link>
         </Menu.Item>

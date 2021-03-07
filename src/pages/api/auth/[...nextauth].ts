@@ -1,12 +1,10 @@
-import { DateTime } from 'luxon';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { InitOptions } from 'next-auth';
 import Adapters from 'next-auth/adapters';
 import Providers from 'next-auth/providers';
 import { Role } from '../../../enums';
-import { AuthUser } from '../../../models/auth-user/auth-user.model';
 import { Session } from '../../../types';
-import { createConnection, getRepo } from '../lib';
+import { AuthService } from '../lib/services';
 
 const options: InitOptions = {
   // full list of providers can be found https://next-auth.js.org/configuration/providers
@@ -35,42 +33,19 @@ const options: InitOptions = {
     name: 'auth',
   }),
   events: {
-    signIn: async ({ user: { id, name } }) => {
-      const connection = await createConnection();
-      const now = DateTime.now().toJSDate();
-
-      const user: AuthUser = {
-        id,
-        name,
-        created: now,
-        updated: now,
-        role: Role.USER,
-      };
-
-      await connection
-        .createQueryBuilder()
-        .insert()
-        .into(AuthUser)
-        .values(user)
-        .orUpdate({ conflict_target: ['id'], overwrite: ['updated'] })
-        .execute();
-    },
+    signIn: async ({ user: { id, name } }) => AuthService.instance.save({ id, name }),
   },
   callbacks: {
     session: async (sessionData, { id }: { [key: string]: string | number }) => {
       if (!id) {
         throw new Error('Error whilst getting session - no id present');
       }
-      const session = sessionData as Session;
 
+      const session = sessionData as Session;
       session.user.id = id;
 
-      try {
-        const repo = await getRepo<AuthUser>(AuthUser);
-        session.user.role = (await repo.findByIds([id]))[0].role;
-      } catch (error) {
-        session.user.role = Role.USER;
-      }
+      const authUser = await AuthService.instance.find(id);
+      session.user.role = authUser?.role ?? Role.USER;
 
       return session;
     },

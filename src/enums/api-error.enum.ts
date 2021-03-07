@@ -13,4 +13,5 @@ export enum ApiError {
 
   // Seeds - range 1201 - 1300
   SEED_ALREADY_EXISTS = 1201,
+  SEED_ALREADY_LIKED = 1202,
 }

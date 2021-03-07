@@ -1,8 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ApiError } from '../../../enums';
-import { Seed } from '../../../models';
-import { error, success } from '../../../utils';
-import { getRepo } from '../lib';
+import { ApiError } from '../../../../enums';
+import { error, parseQueryString, success } from '../../../../utils';
+import { SeedService } from './../../lib/services/seed.service';
 
 const get = async (req: NextApiRequest, res: NextApiResponse) => {
   const {
@@ -14,17 +13,7 @@ const get = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const seedRepo = await getRepo<Seed>(Seed);
-  const data = await seedRepo.findOne({
-    where: { seed },
-    cache: 60000,
-  });
-
-  if (!data) {
-    error(res, 'Seed does not exist', ApiError.RESOURCE_NOT_FOUND);
-    return;
-  }
-
+  const data = SeedService.instance.findBySeed(res, parseQueryString(seed));
   success(res, data);
 };
 

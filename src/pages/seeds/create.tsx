@@ -29,6 +29,7 @@ const CreateSeed = () => {
   const [validationErrors, setValidationErrors] = React.useState<ValidationError[]>(undefined);
   const [success, setSuccess] = React.useState(false);
   const [error, setError] = React.useState<{ title: string; message: string }>(undefined);
+  const [submissions, setSubmissions] = React.useState(0);
 
   const hasValidSeed = () => {
     const { seed, description, title } = formData || {};
@@ -85,7 +86,6 @@ const CreateSeed = () => {
       method: 'PUT',
       body: file,
     });
-    console.log(uploadedAsset);
 
     if (uploadedAsset.ok) {
       console.log('Uploaded successfully!');
@@ -119,6 +119,7 @@ const CreateSeed = () => {
     setPreviewAsset(undefined);
     setValidationErrors(undefined);
     setSeedTags(undefined);
+    setSubmissions(submissions + 1);
   };
 
   const onSubmit = async () => {
@@ -137,8 +138,6 @@ const CreateSeed = () => {
 
     // Upload assets
     const assets = await uploadAssets();
-
-    console.log(assets);
 
     const seed: PartialDeep<ISeed> = {
       ...formData,
@@ -171,6 +170,7 @@ const CreateSeed = () => {
       resetForm();
     }
   };
+
   const tagOptions = (): DropdownItemProps[] =>
     tags?.data?.map(({ id, tag }) => ({ key: id, text: tag, value: id }));
 
@@ -222,7 +222,7 @@ const CreateSeed = () => {
           error={getValidationErrorForField('description')}
         />
         <Form.Field>
-          <Dropzone preview={true} setFiles={onSetFiles} />
+          <Dropzone preview={true} resetCounter={submissions} setFiles={onSetFiles} />
         </Form.Field>
         <Form.Field>
           <Dropdown

@@ -29,3 +29,10 @@ export const parseNumber = (input: string, radix = 10): number => {
   const parsed = Number.parseInt(input, radix);
   return !isNaN(parsed) ? parsed : undefined;
 };
+
+export const parseQueryString = (value: string | string[] | undefined): string | undefined => {
+  if (!value) {
+    return undefined;
+  }
+  return typeof value === 'string' ? value : value[0];
+};

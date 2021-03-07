@@ -3,8 +3,7 @@ import mime from 'mime-types';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ApiError } from '../../../enums';
 import { error, success } from '../../../utils';
-import { getRepo } from '../lib';
-import { checkExists } from './index';
+import { SeedService } from './../lib/services/seed.service';
 
 let storage: Storage = undefined;
 
@@ -53,11 +52,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
-  const repo = await getRepo();
-
-  if (await checkExists(seed, res, repo)) {
-    return;
-  }
+  await SeedService.instance.errorIfExists(seed, res);
 
   const storage = getStorage();
   const bucket = storage.bucket(process.env.STORAGE_BUCKET_NAME);

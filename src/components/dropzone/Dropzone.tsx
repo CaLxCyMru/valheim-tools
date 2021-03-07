@@ -10,12 +10,18 @@ import styles from '../../styles/components/dropzone/Dropzone.module.scss';
 
 export interface DropzoneProps extends ReactDropzoneProps {
   setFiles?: (files: File[], fileRejections?: FileRejection[], event?: DropEvent) => void;
+  resetCounter?: File[];
   preview?: boolean;
 }
 
-const dropzone = ({ setFiles, preview, ...props }: DropzoneProps): JSX.Element => {
+const dropzone = ({ setFiles, preview, resetCounter, ...props }: DropzoneProps): JSX.Element => {
   const [selectedFiles, setSelectedFiles] = React.useState(undefined);
   const [previewImages, setPreviewImages] = React.useState([]);
+
+  React.useEffect(() => {
+    setSelectedFiles(undefined);
+    setPreviewImages([]);
+  }, [resetCounter]);
 
   const onDrop = useCallback((files: File[], rejections: FileRejection[], event: DropEvent) => {
     setSelectedFiles(files);

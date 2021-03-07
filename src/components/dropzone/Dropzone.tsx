@@ -10,7 +10,7 @@ import styles from '../../styles/components/dropzone/Dropzone.module.scss';
 
 export interface DropzoneProps extends ReactDropzoneProps {
   setFiles?: (files: File[], fileRejections?: FileRejection[], event?: DropEvent) => void;
-  resetCounter?: File[];
+  resetCounter?: number;
   preview?: boolean;
 }
 
